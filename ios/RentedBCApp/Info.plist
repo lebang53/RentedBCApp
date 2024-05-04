@@ -30,6 +30,8 @@
 		<false/>
 		<key>NSAllowsLocalNetworking</key>
 		<true/>
+		<key>NSAllowsArbitraryLoads</key>
+    	<true/>
 	</dict>
 	<key>UILaunchStoryboardName</key>
 	<string>SplashScreen</string>

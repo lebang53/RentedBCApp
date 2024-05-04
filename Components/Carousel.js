@@ -19,7 +19,7 @@ const Carousel = ({ carouselData }) => {
                     animated: true,
                 })
             };
-        }, 2000);
+        }, 3000);
         
         return () => clearInterval(interval);
     });
@@ -89,14 +89,14 @@ const Carousel = ({ carouselData }) => {
                 onScroll={handleScroll}
                 showsHorizontalScrollIndicator={false}
             />
-            {/* <View
+            <View
                     style={{
                         flexDirection: "row", 
                         justifyContent: 'center',
                         marginTop: 10,
                     }}>
                         {renderDotIndicator()}
-            </View> */}
+            </View>
         </>
         
     );

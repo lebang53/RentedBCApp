@@ -13,16 +13,20 @@ const Welcome = ({ navigation }) => {
         },
         {
             id: 2,
-            image: require("../../assets/images/welcome/welcome2.jpg"),        },
+            image: require("../../assets/images/welcome/welcome2.jpg"),       
+        },
         {
             id: 3,
-            image: require("../../assets/images/welcome/welcome3.jpg"),        },
+            image: require("../../assets/images/welcome/welcome3.jpg"),        
+        },
         {
             id: 4,
-            image: require("../../assets/images/welcome/welcome1.jpg"),        },
+            image: require("../../assets/images/welcome/welcome1.jpg"),        
+        },
         {
             id: 5,
-            image: require("../../assets/images/welcome/welcome5.jpg"),        },
+            image: require("../../assets/images/welcome/welcome5.jpg"),        
+        },
     ];
     const renderDotIndicator = () => {
         return carouselData.map((dot, index) => {
@@ -60,15 +64,7 @@ const Welcome = ({ navigation }) => {
         <>
             <StatusBar translucent backgroundColor="transparent" />
             <SafeAreaView style={WelcomeStyles.View}>
-                <Carousel carouselData={carouselData} height={400}/>
-                <View
-                    style={{
-                        flexDirection: "row", 
-                        justifyContent: 'center',
-                        marginTop: 10,
-                    }}>
-                        {renderDotIndicator()}
-                </View>
+                <Carousel carouselData={carouselData} height={400}  />
                 <Text 
                     style={WelcomeStyles.Text}>
                         RentedBC - Tìm trọ, căn hộ, nhà ở
@@ -80,14 +76,14 @@ const Welcome = ({ navigation }) => {
                     nhà ở & cải thiện chất lượng cuộc sống
                 </Text>
 
-                <TouchableOpacity style={WelcomeStyles.Opa} onPress={ () => navigation.navigate("Register")}>
+                <TouchableOpacity style={WelcomeStyles.Opa} onPress={ () => navigation.navigate("Home")}>
                     <Text style={WelcomeStyles.Text3}>
                         Let's Go
                     </Text>
                 </TouchableOpacity>
-                <TouchableOpacity style={WelcomeStyles.Opa} onPress={ () => navigation.navigate("Home")}>
+                <TouchableOpacity style={WelcomeStyles.Opa} onPress={ () => navigation.navigate("Login")}>
                     <Text style={WelcomeStyles.Text3}>
-                        Home
+                    Login
                     </Text>
                 </TouchableOpacity>
                 <TouchableOpacity style={WelcomeStyles.Opa} onPress={ () => navigation.navigate("Management")}>

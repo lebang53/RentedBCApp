@@ -1,34 +1,35 @@
-import React, { useState } from "react";
-import { View, Text, TextInput, TouchableOpacity, Pressable } from "react-native";
-import AppStyles from "../../styles/AppStyles";
-import UserStyles from "./UserStyles";
-import { SafeAreaView } from "react-native-safe-area-context";
-import { LinearGradient } from "expo-linear-gradient";
-import COLORS from "../Home/Constants";
 import { Ionicons } from "@expo/vector-icons";
+import React, { useContext, useState } from "react";
+import { ActivityIndicator, Pressable, Text, TextInput, TouchableOpacity, View } from "react-native";
+import { SafeAreaView } from "react-native-safe-area-context";
+import axiosInstance from "../../configs/http";
+import COLORS from "../Home/Constants";
+import UserStyles from "./UserStyles";
+import { UserContext } from "../../context/userContext";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 const Login = ({ navigation }) => {
     const [username, setUsername] = useState("");
     const [password, setPassword] = useState("");
     const [error, setError] = useState("");
     const [isPasswordShown, setIsPasswordShown] = useState(true);
-
+    const [isLoading, setIsLoading] = useState(false);
+    const { setUserInfo } = useContext(UserContext);
     const handleLogin = async () => {
         try {
-            const response = await fetch("https://lebang53.pythonanywhere.com/users/login/", {
-                method: "POST",
-                headers: {
-                    "Content-Type": "application/json"
-                },
-                body: JSON.stringify({
-                    username,
-                    password
-                })
-            });
-            const data = await response.json();
-
-            if (response.ok) {
+            setIsLoading(true)
+            const res = await axiosInstance.post("/users/login/", {
+                username,password
+            })
+            const data = res.data;
+            console.log(data?.user);
+            console.log(data?.access);
+            if (res.status == 200) {
+                setUserInfo(data)  // save global info
+                AsyncStorage.setItem("access", data?.access); // save in storage
+                AsyncStorage.setItem("refresh", data?.refresh);
                 console.log("Đăng nhập thành công");
+                navigation.navigate("Home")
             } else {
                 setError(data.message || "Đăng nhập không thành công");
             }
@@ -36,21 +37,25 @@ const Login = ({ navigation }) => {
             console.error("Lỗi khi gọi API đăng nhập:", error);
             setError("Đã xảy ra lỗi khi đăng nhập. Vui lòng thử lại sau.");
         }
+        finally{
+            setIsLoading(false)
+        }
     };
 
     return ( 
-        <LinearGradient style={{flex: 1, paddingTop: 50}} colors={[COLORS.secondary, COLORS.white]}>
             <SafeAreaView style={{justifyContent: 'center', flex: 1, paddingTop: 50}}>
                 <View style={UserStyles.subject} >
                     <View>
                         <Text style={UserStyles.Text}>
-                            WELCOME BACK!
-                        </Text>
-                        <Text style={UserStyles.Text2}>
+                            WELCOME BACK {''}
+                             <Text style={UserStyles.Text2}>
                             Have a good day!
                         </Text>
+                        </Text>
                     </View>
-
+                    <View>
+                   
+                    </View>
                     <View style={{marginBottom:8}}>
                         <Text style={UserStyles.Text3}>
                             Username
@@ -94,9 +99,9 @@ const Login = ({ navigation }) => {
                         </View>
                         
                     </View>
-                    <TouchableOpacity style={UserStyles.Opa} onPress={ () => navigation.navigate("Register")}>
+                    <TouchableOpacity style={UserStyles.Opa} onPress={handleLogin}>
                         <Text style={UserStyles.Text4}>
-                            Sign up
+                           Sign in
                         </Text>
                     </TouchableOpacity>
 
@@ -121,8 +126,12 @@ const Login = ({ navigation }) => {
                         </Pressable>
                     </View>
                 </View>
+                {isLoading && (
+                <View style={UserStyles.loadingIndicator}>
+                    <ActivityIndicator size={60} color="#0000ff" />
+                </View>
+            )}
             </SafeAreaView>
-        </LinearGradient>
     );
 };
 

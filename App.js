@@ -14,6 +14,7 @@ import Notifications from './Components/Home/Notifications';
 import Storage from './Components/Home/Storage';
 import Management from './Components/User/Management';
 import UserProfile from './Components/User/UserProfile';
+import { UserProvider } from './context/userContext';
 
 const Drawer = createDrawerNavigator();
 const Stack = createStackNavigator();
@@ -26,25 +27,27 @@ export default function App() {
   // };
   
   return (
-    <NavigationContainer>
-      <Stack.Navigator screenOptions={{ headerShown: false }} initialRouteName='Welcome'>
-        <Stack.Screen name="Welcome" component={Welcome} />
-        <Stack.Screen name="Login" component={Login} />
-        <Stack.Screen name="Register" component={Register} />
-        <Stack.Screen name="Home" component={Home} />
-        <Stack.Screen name="HouseDetails" component={HouseDetails} />
-        <Stack.Screen name="SearchDetails" component={SearchDetails} />
-        <Stack.Screen name="Notifications" component={Notifications} />
-        <Stack.Screen name="Storage" component={Storage} />
-        <Stack.Screen name="Management" component={Management} />
-        <Stack.Screen name="UserProfile" component={UserProfile} />
-      </Stack.Navigator>
-      {/* <Drawer.Navigator>
-        <Drawer.Screen name='Register' component={Register} />
-        <Drawer.Screen name='Login' component={Login} />
-        <Drawer.Screen name='Home' component={Home} />
-      </Drawer.Navigator> */}
-    </NavigationContainer>
+    <UserProvider>
+      <NavigationContainer>
+        <Stack.Navigator screenOptions={{ headerShown: false }} initialRouteName='Welcome'>
+          <Stack.Screen name="Welcome" component={Welcome} />
+          <Stack.Screen name="Login" component={Login} />
+          <Stack.Screen name="Register" component={Register} />
+          <Stack.Screen name="Home" component={Home} />
+          <Stack.Screen name="HouseDetails" component={HouseDetails} />
+          <Stack.Screen name="SearchDetails" component={SearchDetails} />
+          <Stack.Screen name="Notifications" component={Notifications} />
+          <Stack.Screen name="Storage" component={Storage} />
+          <Stack.Screen name="Management" component={Management} />
+          <Stack.Screen name="UserProfile" component={UserProfile} />
+        </Stack.Navigator>
+        {/* <Drawer.Navigator>
+          <Drawer.Screen name='Register' component={Register} />
+          <Drawer.Screen name='Login' component={Login} />
+          <Drawer.Screen name='Home' component={Home} />
+        </Drawer.Navigator> */}
+      </NavigationContainer>
+    </UserProvider>
   );
 }
 
