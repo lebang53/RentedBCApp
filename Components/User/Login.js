@@ -7,6 +7,7 @@ import COLORS from "../Home/Constants";
 import UserStyles from "./UserStyles";
 import { UserContext } from "../../context/userContext";
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import authenticationAPI from "../../apis/authentication";
 
 const Login = ({ navigation }) => {
     const [username, setUsername] = useState("");
@@ -18,9 +19,9 @@ const Login = ({ navigation }) => {
     const handleLogin = async () => {
         try {
             setIsLoading(true)
-            const res = await axiosInstance.post("/users/login/", {
+            const res = await authenticationAPI.login(
                 username,password
-            })
+            );
             const data = res.data;
             console.log(data?.user);
             console.log(data?.access);

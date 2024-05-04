@@ -11,8 +11,10 @@ const UserProvider = ({ children }) => {
     setUser(null);
   };
 
+  const isAuthenticated = () => userInfo != null
+
   return (
-    <UserContext.Provider value={{ userInfo,  setUserInfo }}>
+    <UserContext.Provider value={{ userInfo,  setUserInfo , isAuthenticated}}>
       {children}
     </UserContext.Provider>
   );

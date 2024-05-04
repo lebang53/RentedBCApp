@@ -19,7 +19,7 @@ export default StyleSheet.create({
         alignItems: 'center',
     },
     Opa: {
-        backgroundColor: '#019012',
+        backgroundColor: '#56bf52',
         borderRadius: 30,
         paddingVertical: 14,
         width: "90%",

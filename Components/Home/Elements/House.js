@@ -9,19 +9,19 @@ const House = () => {
         <View>
             <FlatList data={Houses} renderItem={ ({ item }) => 
             <Pressable 
-            onPress={() => navigation.navigate("HouseDetails", {house: item})}
-            style={{
-                backgroundColor: "#fff",
-                borderRadius: 16,
-                marginVertical: 10,
-                alignItems: 'center',
-                shadowColor: "#000",
-                shadowOffset: { width: 0, height: 4 },
-                shadowOpacity: 0.1,
-                shadowRadius: 7,
-                paddingHorizontal: 12,
-                paddingVertical: 22,
-            }}>
+                onPress={() => navigation.navigate("HouseDetails", {house: item})}
+                style={{
+                    backgroundColor: "#fff",
+                    borderRadius: 16,
+                    marginVertical: 10,
+                    alignItems: 'center',
+                    shadowColor: "#000",
+                    shadowOffset: { width: 0, height: 4 },
+                    shadowOpacity: 0.1,
+                    shadowRadius: 7,
+                    paddingHorizontal: 12,
+                    paddingVertical: 22,
+                }}>
                 <Image
                 source={item.image} 
                 style={{ 
