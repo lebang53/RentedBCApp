@@ -8,15 +8,18 @@ import Search from "./Elements/Search";
 import Category from "./Elements/Category";
 import House from "./Elements/House";
 import { UserContext } from "../../context/userContext";
+import TabBar from "../TabBar";
+import authenticationAPI from "../../apis/authentication";
 
-const Home = () => {
-  const {userInfo} = useContext(UserContext);
-  console.log(userInfo.user);
+const Home = ({navigation}) => {
+  const {userInfo, isAuthenticated} = useContext(UserContext);
+  const lastName = isAuthenticated() ? userInfo?.user.last_name : 'Bạn'
+  // authenticationAPI.reLogin();
   return (
     <>
       <StatusBar translucent backgroundColor="transparent" />
       <SafeAreaView style={HomeStyles.subject}>
-        <Header headerText={`Hi, ${userInfo?.user.last_name || 'Bang'}`} headerIcon={"bell-o"}/>
+        <Header headerText={`Hi, ${lastName}`} headerIcon={"bell-o"} navigation={navigation}/>
         <Search icon={"search"} />
         
         {/* Categories */}
@@ -30,6 +33,7 @@ const Home = () => {
           <Text style={HomeStyles.Text}>Houses</Text>
           <House />
         </View>
+        <TabBar tabs={["Home", "Search", "Storage", "Profile"]} navigation={navigation}/>
       </SafeAreaView>
     </>
   )
