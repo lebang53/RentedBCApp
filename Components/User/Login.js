@@ -18,6 +18,10 @@ const Login = ({ navigation }) => {
     const { setUserInfo } = useContext(UserContext);
     const handleLogin = async () => {
         try {
+            if (!username || !password) {
+                console.error("Vui lòng nhập username và password");
+                return;
+            }
             setIsLoading(true)
             const res = await authenticationAPI.login(
                 username,password

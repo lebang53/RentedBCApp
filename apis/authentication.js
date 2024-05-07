@@ -4,7 +4,7 @@ import {checkExpireToken} from '../utils/common'
 const authenticationAPI = {
     async login(username, password)  {
         const res = await axiosInstance.post("/users/login/", {
-            username,password
+            username, password
         })
         return res;
     },

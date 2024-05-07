@@ -1,13 +1,16 @@
 import { useRoute } from "@react-navigation/native";
-import { useEffect, useRef, useState } from "react";
-import { Dimensions, FlatList, Image, Text, TouchableOpacity, View } from "react-native"
+import { useContext, useEffect, useRef, useState } from "react";
+import { Dimensions, FlatList, Image, Text, TextInput, TouchableOpacity, View } from "react-native"
 import { SafeAreaView } from "react-native-safe-area-context";
 import { Ionicons } from "@expo/vector-icons";
 import COLORS from "../Constants";
+import { API_BASE, COMMENT } from "../../../constants/api";
+import axios from "axios";
+import { UserContext } from "../../../context/userContext";
 
 const HouseDetails = ({ navigation }) => {
     const route = useRoute();
-    const house = route.params?.house;
+    const posts = route.params?.posts;
     const flatListRef = useRef();
 
     const screenWidth = Dimensions.get("window").width;
@@ -31,6 +34,33 @@ const HouseDetails = ({ navigation }) => {
         
         return () => clearInterval(interval);
     });
+
+    //======================== COMMENT =====================
+    const [comments, setComments] = useState([]);
+    const { userInfo, isAuthenticated } = useContext(UserContext);
+    useEffect(() => {
+        const fetchComments = async () => {
+            try {
+                if (isAuthenticated()) {
+                    const response = await axios.get(`${API_BASE}${COMMENT(posts.id)}`, {
+                        headers: {
+                            Authorization: `Bearer ${userInfo.access}`,
+                        },
+                    });
+                    console.log(response.data);
+                    setComments(response.data);
+                    console.log(response.data);
+                } else {
+                    console.log('Người dùng chưa được xác thực');
+                }
+            } catch (error) {
+                console.error('Error fetching comments:', error);
+            }
+        };
+    
+        fetchComments(); 
+    
+    }, []);
 
     const getItemLayout = (data, index) => ({
         length: screenWidth,
@@ -73,6 +103,7 @@ const HouseDetails = ({ navigation }) => {
             if(activeIndex === index) {
                 return (
                     <View 
+                    key={index}
                     style={{
                         backgroundColor: "green",
                         height: 10,
@@ -122,7 +153,7 @@ const HouseDetails = ({ navigation }) => {
                         fontSize: 22,
                         fontWeight: "bold",
                     }}>
-                        {house.name}
+                        {posts.content}
                     </Text>
                 </View>
                 <View>
@@ -131,7 +162,7 @@ const HouseDetails = ({ navigation }) => {
                     data={carouselData} 
                     getItemLayout={getItemLayout}
                     renderItem={renderItem} 
-                    keyExtractor={(item) => item.id}
+                    keyExtractor={(item, index) => index.toString()}
                     horizontal={true} 
                     pagingEnabled={true} 
                     onScroll={handleScroll}
@@ -156,17 +187,17 @@ const HouseDetails = ({ navigation }) => {
                         fontWeight: "bold", 
                         fontSize: 20,
                     }}>
-                            <Ionicons name="shield-checkmark-outline" size={16}/> {house.description}
+                            <Ionicons name="shield-checkmark-outline" size={16}/> {posts.content}
                     </Text>
                     <Text>
-                        <Ionicons name="location-outline" size={16}  /> {house.address}
+                        <Ionicons name="location-outline" size={16}  /> {posts.house.address}
                     </Text>
                     <View style={{ flexDirection: "row"}}>
                         <Text>
-                            Giá thuê: {house.rent_price}
+                            Giá thuê: {posts.house.rent_price}
                         </Text>
                         <Text style={{ paddingLeft: 120}}>
-                            Số phòng: {house.room_count}
+                            Số phòng: {posts.house.room_count}
                         </Text>
                     </View>
                 </View>
@@ -229,10 +260,10 @@ const HouseDetails = ({ navigation }) => {
                         height: 90,
                         backgroundColor: "#ccffd0"
                         }}>
-                        <Image source={require("../../../assets/images/khoc1.png")} style={{ width: 50, height: 50, borderRadius: 25, marginHorizontal: 10 }} />
+                        <Image source={{ uri: posts.house.owner.avatar}} style={{ width: 50, height: 50, borderRadius: 25, marginHorizontal: 10 }} />
 
                         <View style={{ flex:1}}>
-                            <Text style={{ fontSize: 16, fontWeight: "600"}}>Chủ nhà: LeBang</Text>
+                            <Text style={{ fontSize: 16, fontWeight: "600"}}>Chủ nhà: {posts.house.owner.last_name}</Text>
                             <Text style={{ fontSize: 15, fontWeight: "700"}}>0375574702</Text>
                         </View>
 
@@ -261,6 +292,37 @@ const HouseDetails = ({ navigation }) => {
                 </View>
 
                 
+                
+                
+                <View style={{ paddingHorizontal: 16 }}>
+
+                    <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+                        <TextInput
+                            style={{ flex: 1, borderWidth: 1, borderColor: COLORS.grey, borderRadius: 5, padding: 10 }}
+                            placeholder="Nhập nội dung bình luận..."
+                            // value={commentContent}
+                            // onChangeText={setCommentContent}
+                        />
+                        <TouchableOpacity  style={{ marginLeft: 10, padding: 10, backgroundColor: COLORS.primary, borderRadius: 5 }}>
+                            <Text style={{ color: COLORS.white }}>Gửi</Text>
+                        </TouchableOpacity>
+                    </View>
+
+                    <Text style={{fontSize: 20, fontWeight: "bold", marginVertical: 12}}>Comments</Text>
+                    <FlatList 
+                        data={comments}
+                        renderItem={({ item }) => (
+                            <View style={{ marginBottom: 10 }}>
+                                <Text>{item.content}</Text>
+                            </View>
+                        )}
+                        keyExtractor={(item, index) => index.toString()}
+                    />
+                    
+                </View>
+                
+
+
                 <View 
                 style={{ 
                     position: 'absolute', 
@@ -299,7 +361,6 @@ const HouseDetails = ({ navigation }) => {
                         <Text style={{ color: COLORS.primary }}>Lưu</Text>
                     </TouchableOpacity>
                 </View>
-                
             </View>
             
         </SafeAreaView>
