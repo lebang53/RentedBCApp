@@ -38,7 +38,7 @@ const Carousel = ({ carouselData }) => {
 
     const renderItem = ({ item }) => {
         return (
-            <View>
+            <View key={item.id}>
                 <Image source={item.image} style={{ height: 400, width: screenWidth }} />
             </View>
         );
@@ -48,6 +48,7 @@ const Carousel = ({ carouselData }) => {
             if(activeIndex === index) {
                 return (
                     <View 
+                    key={index}
                     style={{
                         backgroundColor: "#019012",
                         height: 10,
@@ -83,7 +84,7 @@ const Carousel = ({ carouselData }) => {
                 data={carouselData} 
                 getItemLayout={getItemLayout}
                 renderItem={renderItem} 
-                keyExtractor={(item) => item.id}
+                keyExtractor={(item, index) => index.toString()}
                 horizontal={true} 
                 pagingEnabled={true} 
                 onScroll={handleScroll}

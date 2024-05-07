@@ -1,16 +1,64 @@
-import React, { useState } from "react";
-import { View, Text, StatusBar, TextInput, Pressable, Image, FlatList } from "react-native";
+import React, { useContext, useEffect, useState } from "react";
+import { View, Text, StatusBar, TextInput, Pressable, Image, FlatList, TouchableOpacity, ScrollView } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import Carousel from "../Carousel";
 import { FontAwesome, Ionicons } from "@expo/vector-icons";
 import COLORS, { Houses } from "../Home/Constants";
 import { Picker } from "@react-native-picker/picker";
+import { API_BASE, HOUSE, POST } from "../../constants/api";
+import axios from "axios";
+import { UserContext } from "../../context/userContext";
 
 const SearchDetails = ({ navigation }) => {
     const [keyword, setKeyword] = useState("");
     const [select1, setSelect1] = useState("");
     const [select2, setSelect2] = useState("");
     const [select3, setSelect3] = useState("");
+    const [searchResults, setSearchResults] = useState([]);
+    
+    const handleSearch = async () => {
+        try {
+            const response = await axios.get(`${API_BASE}${HOUSE}`, {
+                params: {
+                    keyword: keyword,
+                    address: select3,
+                    room_count: select1,
+                    rent_price: select2,
+                }
+            });
+
+            console.log(response.data);
+            setSearchResults(response.data);
+        } catch (error) {
+            console.error('Error searching houses:', error);
+        }
+    };
+
+    const [posts, setPosts] = useState([]);
+    const { userInfo, isAuthenticated } = useContext(UserContext);
+
+    useEffect(() => {
+        const fetchPosts = async () => {
+            try {
+                if (isAuthenticated()) {
+                    const response = await axios.get(`${API_BASE}${POST}`, {
+                        headers: {
+                            Authorization: `Bearer ${userInfo.access}`,
+                        },
+                    });
+                    setPosts(response.data.results);
+                    console.log(response.data.results);
+                } else {
+                    console.log('Người dùng chưa được xác thực');
+                }
+            } catch (error) {
+                console.error('Error fetching categories:', error);
+            }
+        };
+
+        fetchPosts();
+    }, []);
+
     const carouselData = [
         {
             id: 1,
@@ -29,15 +77,12 @@ const SearchDetails = ({ navigation }) => {
             id: 5,
             image: require("../../assets/images/welcome/welcome5.jpg"),        },
     ];
-    const handleSearch = () => {
-        // Pass location and keyword to parent component for searching
-        onSearch({ location, keyword });
-    }
+
     return (
         <>
             <StatusBar translucent backgroundColor="#fff" />
-            <SafeAreaView>
-                <View>
+            <SafeAreaView style={{flex: 1}}>
+                <ScrollView style={{flex: 1}}>
                     <View style={{height: 300, position: 'relative'}} >
                         <Carousel carouselData={carouselData} />
                     </View>
@@ -93,17 +138,12 @@ const SearchDetails = ({ navigation }) => {
                                     onChangeText={setKeyword}
                                 />
                             </View>
-
-                            {/* Add the search button here */}
-                            {/* <TouchableOpacity onPress={handleSearch}>
-                                <Text></Text>
-                            </TouchableOpacity> */}
                         </View>
                         
                         <View 
                         style={{ 
                             paddingHorizontal: 20, 
-                            paddingBottom: 20,
+                            paddingBottom: 30,
                             backgroundColor: "#fff",
                             width: "94%", 
                             alignSelf: 'center',
@@ -123,21 +163,21 @@ const SearchDetails = ({ navigation }) => {
                             </Picker>
 
                             <Picker
-                                selectedValue={select1}
+                                selectedValue={select2}
                                 style={{ height: 50, width: '100%' }}
                                 onValueChange={(itemValue, itemIndex) => {
-                                    setSelect1(itemValue);
+                                    setSelect2(itemValue);
                                 }}>
                                 <Picker.Item label="Chọn mức giá..." value="default" />
                                 <Picker.Item label="1000000" value="1000000" />
-                                <Picker.Item label="2000000" value="000000" />
+                                <Picker.Item label="2000000" value="2000000" />
                             </Picker>
 
                             <Picker
-                                selectedValue={select1}
+                                selectedValue={select3}
                                 style={{ height: 50, width: '100%' }}
                                 onValueChange={(itemValue, itemIndex) => {
-                                    setSelect1(itemValue);
+                                    setSelect3(itemValue);
                                 }}>
                                 <Picker.Item label="Chọn quận/huyện/thành phố" value="default" />
                                 <Picker.Item label="Nhà Bè" value="Nhà Bè" />
@@ -147,8 +187,34 @@ const SearchDetails = ({ navigation }) => {
 
                     </View>
                     
+                    <View 
+                    style={{ 
+                        bottom: 0, 
+                        width: '100%', 
+                        flexDirection: 'row', 
+                        justifyContent: 'space-around', 
+                        marginBottom: -20,
+                        top: -50,
+                        }}>
+                        <TouchableOpacity onPress={ handleSearch } 
+                        style={{ 
+                            backgroundColor: COLORS.primary, 
+                            padding: 10, 
+                            borderRadius: 30, 
+                            width: "48%",
+                            alignItems: 'center',
+                            flexDirection: 'row',
+                            justifyContent: 'center'
+                            }}>
+                            <Ionicons name="search-outline" size={24} color={COLORS.white} />
+                            <Text style={{ color: 'white' }}>Tìm phòng</Text>
+                        </TouchableOpacity>
+                    </View>
+
+                    
                     <View style={{
                             paddingHorizontal: 10,
+                            flex: 1 
                         }}>
                         <Text style={{
                             fontSize: 16,
@@ -156,49 +222,50 @@ const SearchDetails = ({ navigation }) => {
                         }}>
                             Các nhà ở nổi bật
                         </Text>
-                        <View style>
-                            <FlatList  data={Houses} renderItem={ ({ item }) => 
-                            <Pressable 
-                            onPress={() => navigation.navigate("HouseDetails", {house: item})}
-                            style={{
-                                backgroundColor: "#fff",
-                                borderRadius: 16,
-                                marginVertical: 10,
-                                alignItems: 'center',
-                                shadowColor: "#000",
-                                shadowOffset: { width: 0, height: 4 },
-                                shadowOpacity: 0.1,
-                                shadowRadius: 7,
-                                paddingHorizontal: 12,
-                                paddingVertical: 20,
-                            }}>
-                                <FontAwesome name="shopping-cart"/>
-                                <Image
-                                source={item.image} 
-                                style={{ 
-                                    width: 150,
-                                    height: 150,
-                                    resizeMode: "center"
-                                }}/>
-                                <Text>{item.name}</Text>
-                                <Text style={{ marginTop: 8}}>{item.address}</Text>
-                                <View style={{flexDirection: "row", marginTop: 8}}>
-                                    <Text>{item.rent_price}$</Text>
-                                    <Text> | </Text>
-                                    <View>
-                                        <Text>room: {item.room_count}</Text>
-                                    </View>
-                                </View>
-                            </Pressable>} 
-                            numColumns={2}
-                            columnWrapperStyle={{
-                                justifyContent: "space-between"
-                            }}
-                            showsVerticalScrollIndicator={false}
-                            />
+                        <View style={{flex: 1}}>
+                            <ScrollView contentContainerStyle={{ flexDirection: 'row', flexWrap: 'wrap' }}>
+                                {posts.map(item => (
+                                    <Pressable 
+                                        key={item.id}
+                                        onPress={() => navigation.navigate("HouseDetails", {houses: item}, {posts: item})}
+                                        style={{
+                                            backgroundColor: "#fff",
+                                            borderRadius: 16,
+                                            marginVertical: 10,
+                                            alignItems: 'center',
+                                            shadowColor: "#000",
+                                            shadowOffset: { width: 0, height: 4 },
+                                            shadowOpacity: 0.1,
+                                            shadowRadius: 7,
+                                            paddingHorizontal: 12,
+                                            paddingVertical: 20,
+                                            width: '48%', 
+                                            marginLeft: '1%', 
+                                            marginRight: '1%', 
+                                        }}>
+                                        <Image
+                                            source={item.image} 
+                                            style={{ 
+                                                width: 150,
+                                                height: 150,
+                                                resizeMode: "center"
+                                            }}/>
+                                        <Text style={{alignContent: "center"}}>{item.content}</Text>
+                                        <Text style={{ marginTop: 8}}>{item.house.address}</Text>
+                                        <View style={{flexDirection: "row", marginTop: 8}}>
+                                            <Text>{item.house.rent_price}$</Text>
+                                            <Text> | </Text>
+                                            <View>
+                                                <Text>room: {item.house.room_count}</Text>
+                                            </View>
+                                        </View>
+                                    </Pressable>
+                                ))}
+                            </ScrollView>
                         </View>
                     </View>
-                </View>
+                 
+                </ScrollView>
             </SafeAreaView>
         </>
     );

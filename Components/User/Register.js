@@ -1,4 +1,4 @@
-import { Alert, Button, Image, Pressable, Text, TextInput, Touchable, TouchableOpacity, View} from "react-native"
+import { ActivityIndicator, Alert, Button, Image, Pressable, Text, TextInput, Touchable, TouchableOpacity, View} from "react-native"
 import { SafeAreaView } from "react-native-safe-area-context"
 import AppStyles from "../../styles/AppStyles"
 import UserStyles from "./UserStyles"
@@ -8,6 +8,7 @@ import { LinearGradient } from "expo-linear-gradient"
 import COLORS from "../Home/Constants"
 import { Ionicons } from "@expo/vector-icons"
 import { Users } from "react-native-feather"
+import registerAPI from "../../apis/register"
 
 const Register = ( {navigation} ) => {
     const [firstname, setFirstname] = useState('');
@@ -18,6 +19,7 @@ const Register = ( {navigation} ) => {
     const [avatar, setAvatar] = useState(null);
     const [error, setError] = useState("");
     const [isPasswordShown, setIsPasswordShown] = useState(true);
+    const [isLoading, setIsLoading] = useState(false);
 
     const pickImage = async () => {
         const {status} = await ImagePicker.requestMediaLibraryPermissionsAsync();
@@ -39,38 +41,32 @@ const Register = ( {navigation} ) => {
     }
     
     const handleRegister = async () => {
-        try { 
-            const response = await fetch("https://lebang53.pythonanywhere.com/users/", {
-                method: "POST",
-                headers: {
-                    "Content-Type": "application/json"
-                },
-                body: JSON.stringify({
-                    username,
-                    password,
-                    firstname,
-                    lastname,
-                    email,
-                    avatar,
-                })
-            });
-
-            const data = await response.json();
-
-            if (response.ok) {
+        try {
+            setIsLoading(true)
+            const res = await registerAPI.register(
+                firstname, lastname, email, username,password
+            );
+            const data = res.data;
+            console.log(data?.user);
+            if (res.status == 200) {
+                setUserInfo(data)  // save global info
                 console.log("Đăng ký thành công");
+                navigation.navigate("Login")
             } else {
-                setError(data.message || "Đăng ký không thành công")
-            };
+                setError(data.message || "Đăng ký không thành công");
+            }
         } catch (error) {
             console.error("Lỗi khi gọi API đăng ký:", error);
-            setError("Đã xảy ra lỗi khi đăng ký, vui lòng thử lại sau!")
-        };
+            setError("Đã xảy ra lỗi khi đăng ký. Vui lòng thử lại sau.");
+        }
+        finally{
+            setIsLoading(false)
+        }
     };
+    
 
     return (
-        <LinearGradient style={{flex: 1}} colors={[COLORS.secondary, COLORS.white]}>
-            <SafeAreaView>
+            <SafeAreaView style={{flex: 1}}>
                 <View style={UserStyles.subject} >
                     <View>
                         <Text style={UserStyles.Text}>
@@ -79,6 +75,10 @@ const Register = ( {navigation} ) => {
                         <Text style={UserStyles.Text2}>
                             Connect with our Landlord today!
                         </Text>
+                    </View>
+
+                    <View>
+                   
                     </View>
 
                     <View style={{marginBottom:8}}>
@@ -109,7 +109,7 @@ const Register = ( {navigation} ) => {
                         </View>
                     </View>
 
-                    <View style={{marginBottom:8}}>
+                    {/* <View style={{marginBottom:8}}>
                         <Text style={UserStyles.Text3}>
                             Phone number
                         </Text>
@@ -133,7 +133,7 @@ const Register = ( {navigation} ) => {
                                     }}
                             />
                         </View>
-                    </View>
+                    </View> */}
 
                     <View style={{marginBottom:8}}>
                         <Text style={UserStyles.Text3}>
@@ -193,7 +193,11 @@ const Register = ( {navigation} ) => {
                         </View>
                         
                     </View>
-                    <TouchableOpacity style={UserStyles.Opa} onPress={ () => navigation.navigate("Login") }>
+
+                    {/* {avatar && <Image source={{uri: avatar}} style={{width: 100, height:100, borderRadius: 50}} />}
+                    <Button title="Choose avatar" onPress={pickImage} /> */}
+
+                    <TouchableOpacity style={UserStyles.Opa} onPress={ handleRegister }>
                         <Text style={UserStyles.Text4}>
                             Sign up
                         </Text>
@@ -220,8 +224,12 @@ const Register = ( {navigation} ) => {
                         </Pressable>
                     </View>
                 </View>
+                {isLoading && (
+                <View style={UserStyles.loadingIndicator}>
+                    <ActivityIndicator size={60} color="#0000ff" />
+                </View>
+                )}
             </SafeAreaView>
-        </LinearGradient>
-    )
+    );
 }
 export default Register

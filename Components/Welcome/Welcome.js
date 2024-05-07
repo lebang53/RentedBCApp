@@ -28,38 +28,6 @@ const Welcome = ({ navigation }) => {
             image: require("../../assets/images/welcome/welcome5.jpg"),        
         },
     ];
-    const renderDotIndicator = () => {
-        return carouselData.map((dot, index) => {
-            if(activeIndex === index) {
-                return (
-                    <View 
-                    style={{
-                        backgroundColor: "#019012",
-                        height: 10,
-                        width:10,
-                        borderRadius: 5,
-                        marginHorizontal: 6,
-                    }}>
-                    </View>
-                );
-            } else {
-                return (
-                    <View 
-                    key={index}
-                    style={{
-                        backgroundColor: "#CCCCCC",
-                        height: 10,
-                        width:10,
-                        borderRadius: 5,
-                        marginHorizontal: 6,
-                    }}>
-    
-                    </View>
-                );
-            }
-
-        });
-    };
     return (
         <>
             <StatusBar translucent backgroundColor="transparent" />
