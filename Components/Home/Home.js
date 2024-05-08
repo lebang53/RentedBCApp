@@ -1,15 +1,13 @@
-import HomeStyles from "./HomeStyles"
-import { View, Text, TextInput, StatusBar } from 'react-native';
 import React, { useContext } from "react";
-import Header from "./Elements/Header";
+import { StatusBar, Text, View } from 'react-native';
 import { SafeAreaView } from "react-native-safe-area-context";
-import { FontAwesome } from "@expo/vector-icons";
-import Search from "./Elements/Search";
-import Category from "./Elements/Category";
-import House from "./Elements/House";
 import { UserContext } from "../../context/userContext";
 import TabBar from "../TabBar";
-import authenticationAPI from "../../apis/authentication";
+import Category from "./Elements/Category";
+import Header from "./Elements/Header";
+import House from "./Elements/House";
+import Search from "./Elements/Search";
+import HomeStyles from "./HomeStyles";
 
 const Home = ({navigation}) => {
   const {userInfo, isAuthenticated} = useContext(UserContext);

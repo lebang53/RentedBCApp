@@ -1,4 +1,4 @@
-export const API_BASE = 'https://d65f-116-98-255-73.ngrok-free.app'
+export const API_BASE = 'https://8e15-125-235-238-46.ngrok-free.app'
 
 
 //======================== AUTHENTICATION ========================
