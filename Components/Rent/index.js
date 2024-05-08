@@ -1,21 +1,22 @@
 import React, { useState } from 'react';
-import { View, Text, TouchableOpacity, StyleSheet, SafeAreaView } from 'react-native';
+import { SafeAreaView, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import Icon from 'react-native-vector-icons/FontAwesome';
+import MapViewComponent from './Map';
 import ProfileHome from './ProfileHome';
-import Checkout from './Checkout';
+import SuccessScreen from './Success';
 
-const Rent = () => {
+const Rent = ({ navigation }) => {
   const [currentScreen, setCurrentScreen] = useState(1);
   const [activeIndicators, setActiveIndicators] = useState([]);
-
+  const [isCheckoutSuccess, setIsCheckoutSuccess] = useState(false)
   const renderScreen = () => {
     switch (currentScreen) {
       case 1:
-        return <ProfileHome />;
+        return <ProfileHome setIsCheckoutSuccess={setIsCheckoutSuccess}/>;
       case 2:
-        return <Screen2 />;
+        return <MapViewComponent   />;
       case 3:
-        return <Screen3 />;
+        return <SuccessScreen navigation={navigation}/>;
       default:
         return <Screen1 />;
     }
@@ -56,8 +57,8 @@ const Rent = () => {
           <TouchableOpacity onPress={handleBack} disabled={!(currentScreen > 1)}>
             <Icon name="chevron-left" size={30} color={currentScreen > 1 ? 'black' : 'gray'}  />
           </TouchableOpacity>
-          <TouchableOpacity onPress={handleNext} disabled={!(currentScreen < 3)}>
-            <Icon name="chevron-right" size={30} color={currentScreen < 3 ? 'black' : 'gray'} />
+          <TouchableOpacity onPress={handleNext} disabled={!(currentScreen < 3 && isCheckoutSuccess) }>
+            <Icon name="chevron-right" size={30} color={currentScreen < 3 && isCheckoutSuccess ? 'black' : 'gray'} />
           </TouchableOpacity>
       </View>
     </SafeAreaView>
@@ -72,19 +73,6 @@ const Screen1 = () => (
 );
 
 
-const Screen2 = () => (
-  <View style={styles.screen}>
-    <Text>Tiến hành thanh toán</Text>
-    {/* Thêm các thành phần của màn hình 3 ở đây */}
-  </View>
-);
-
-const Screen3 = () => (
-  <View style={styles.screen}>
-    <Text>Lời cảm ơn và cam kết</Text>
-    {/* Thêm các thành phần của màn hình 4 ở đây */}
-  </View>
-);
 
 const styles = StyleSheet.create({
   container: {

@@ -8,21 +8,24 @@ const Carousel = ({ carouselData }) => {
 
     useEffect(() => {
         let interval = setInterval(() => {
-            if (activeIndex === carouselData.length - 1){
+            console.log("Home", activeIndex);
+            if (activeIndex === (carouselData.length - 1)){
                 flatListRef.current.scrollToIndex({
                     index: 0,
                     animated: true,
                 })
+                setActiveIndex(0);
             } else {
                 flatListRef.current.scrollToIndex({
                     index: activeIndex + 1,
                     animated: true,
                 })
-            };
+                setActiveIndex(prevIndex => prevIndex + 1);
+            }
         }, 3000);
         
         return () => clearInterval(interval);
-    });
+    }, []);
 
     const getItemLayout = (data, index) => ({
         length: screenWidth,

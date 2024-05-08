@@ -15,6 +15,7 @@ const CreatePost = () => {
     const fetchHouses = async () => {
         try {
           const response = await axios.get(`${API_BASE}${HOUSE}`); 
+          console.log(response);
           setHouses(response.data.results); 
         } catch (error) {
           console.error('Lỗi khi lấy danh sách nhà:', error);
@@ -46,11 +47,14 @@ const CreatePost = () => {
         }
     
         try {
+            console.log(isAuthenticated());
             if (isAuthenticated()) {
+                console.log("postContent", postContent);
+                console.log("selectedHouse", selectedHouse);
+                console.log(userInfo.access);
                 const response = await axios.post(`${API_BASE}${CREATE_POST}`, {
                     content: postContent,
-                    user: 2,
-                    house_id: selectedHouse,
+                    house_id: 1,
                     },
                     {
                         headers: {
@@ -69,7 +73,9 @@ const CreatePost = () => {
             }
         
         } catch (error) {
-        console.error('Đã xảy ra lỗi khi gửi yêu cầu đến server:', error);
+            console.error('Đã xảy ra lỗi khi gửi yêu cầu đến server:', error);
+            console.error('Error message:', error.message);
+            // console.error('Stack trace:', error.stack);
         }
     };
   
