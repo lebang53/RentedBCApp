@@ -1,12 +1,11 @@
-import { FontAwesome } from '@expo/vector-icons';
-import { useRoute } from '@react-navigation/native';
 import React, { useContext, useState } from 'react';
 import { View, Text, Image, StyleSheet, TouchableOpacity, Dimensions } from 'react-native';
 import { TextInput } from 'react-native-gesture-handler';
 import Modal from 'react-native-modal';
 import { UserContext } from '../../context/userContext';
+import { useRoute } from '@react-navigation/native';
 
-const ProfileHome = () => {
+const ProfileHome = ({setIsCheckoutSuccess}) => {
   const route = useRoute();
   const posts = route.params?.posts;
   const [isModalVisible, setModalVisible] = useState(false);
@@ -15,23 +14,26 @@ const ProfileHome = () => {
   const toggleModal = () => {
     setModalVisible(!isModalVisible);
   };
-
+  const checkout = () => {
+    setIsCheckoutSuccess(true);
+    setModalVisible(!isModalVisible);
+  }
   return (
     <View style={styles.screen}>
       <View style={styles.session1}>
-        {/* Thành phần session 1 */}
+        {/* User's profile section */}
         <Image
           source={{ uri: 'https://masterpiecer-images.s3.yandex.net/e119b10b603111ee9fec3a7ca4cc1bdc:upscaled' }}
           style={styles.avatar}
         />
         <Text style={styles.username}>Tên Người Dùng</Text>
         <Text style={styles.username}>{userInfo?.user.last_name}</Text>
-        {/* Các thông tin khác của người dùng có thể được thêm ở đây */}
+        {/* Additional user info can be added here */}
       </View>
       <View style={styles.session2}>
-        {/* Thành phần session 2 */}
+        {/* House info section */}
         <Text style={styles.infoTitle}>Thông Tin Nhà: {posts.content}</Text>
-        {/* Thêm các thông tin nhà ở đây */}
+        {/* House details */}
         <View style={styles.infoContainer}>
           <Text style={styles.infoLabel}>Địa chỉ:</Text>
           <TextInput
@@ -48,20 +50,18 @@ const ProfileHome = () => {
             editable={false}
           />
         </View>
-        {/* Thêm các thông tin khác về nhà ở đây nếu cần */}
+        {/* Additional house info can be added here */}
         <TouchableOpacity onPress={toggleModal} style={styles.button}>
           <Text style={styles.buttonText}>Thanh Toán</Text>
         </TouchableOpacity>
+        {/* Payment modal */}
         <Modal isVisible={isModalVisible} style={styles.modal} onBackdropPress={toggleModal}>
           <View style={styles.modalContent}>
-            <TouchableOpacity onPress={toggleModal} style={styles.closeButton}>
-              <FontAwesome name={'close'} style={styles.closeButtonText} /> 
-            </TouchableOpacity>
             <Text style={styles.modalText}>Số tiền cần thanh toán: $100</Text>
-           
+            <Text style={styles.modalText2}>Số tiền cần còn trong tài khoản 100$</Text>
           </View>
-          <TouchableOpacity onPress={toggleModal} style={styles.bottomButton}>
-          <Text style={styles.buttonText}>Tiến Hành Thanh Toán</Text>
+          <TouchableOpacity onPress={checkout} style={styles.bottomButton}>
+            <Text style={styles.buttonText}>Tiến Hành Thanh Toán</Text>
           </TouchableOpacity>
         </Modal>
       </View>
@@ -116,7 +116,7 @@ const styles = StyleSheet.create({
   infoLabel: {
     fontWeight: 'bold',
     marginRight: 10,
-    width: '15%', // Độ rộng của nhãn có thể điều chỉnh tùy theo nhu cầu
+    width: '15%', // Adjust label width as needed
   },
   button: {
     backgroundColor: '#007bff',
@@ -128,7 +128,6 @@ const styles = StyleSheet.create({
     color: '#fff',
     fontWeight: 'bold',
     textAlign: 'center',
-
   },
   modal: {
     justifyContent: 'flex-end',
@@ -140,27 +139,15 @@ const styles = StyleSheet.create({
     borderTopLeftRadius: 10,
     borderTopRightRadius: 10,
     alignItems: 'center',
-    height: windowHeight * 0.5,
+    height: windowHeight * 0.25,
   },
   modalText: {
     fontSize: 18,
     marginBottom: 20,
   },
-  modalButton: {
-    backgroundColor: '#007bff',
-    padding: 10,
-    borderRadius: 5,
-    width: '100%',
-  },
-  closeButton: {
-    position: 'absolute',
-    top: 25,
-    right: 20,
-  },
-  closeButtonText: {
-    fontSize: 20,
-    color: '#007bff',
-    fontWeight: 'bold',
+  modalText2: {
+    fontSize: 12,
+    marginBottom: 20,
   },
   bottomButton: {
     position: 'absolute',
@@ -172,7 +159,6 @@ const styles = StyleSheet.create({
     padding: 10,
     borderRadius: 20,
   },
-  
 });
 
 export default ProfileHome;

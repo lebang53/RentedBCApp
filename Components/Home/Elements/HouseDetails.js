@@ -1,13 +1,12 @@
-import { useRoute } from "@react-navigation/native";
-import { useContext, useEffect, useRef, useState } from "react";
-import { Dimensions, FlatList, Image, ScrollView, Text, TextInput, TouchableOpacity, View } from "react-native"
-import { SafeAreaView } from "react-native-safe-area-context";
 import { Ionicons } from "@expo/vector-icons";
-import COLORS from "../Constants";
-import { API_BASE, COMMENT, POST_COMMENT } from "../../../constants/api";
+import { useRoute } from "@react-navigation/native";
 import axios from "axios";
+import { useContext, useEffect, useRef, useState } from "react";
+import { Dimensions, FlatList, Image, ScrollView, Text, TextInput, TouchableOpacity, View } from "react-native";
+import { SafeAreaView } from "react-native-safe-area-context";
+import { API_BASE, COMMENT, POST_COMMENT } from "../../../constants/api";
 import { UserContext } from "../../../context/userContext";
-import { ActionSheet } from "@expo/react-native-action-sheet";
+import COLORS from "../Constants";
 
 const HouseDetails = ({ navigation }) => {
     const route = useRoute();
@@ -20,21 +19,24 @@ const HouseDetails = ({ navigation }) => {
 
     useEffect(() => {
         let interval = setInterval(() => {
-            if (activeIndex === carouselData.length - 1){
+            console.log("Home", activeIndex);
+            if (activeIndex === (carouselData.length - 1)){
                 flatListRef.current.scrollToIndex({
                     index: 0,
-                    animation: true,
+                    animated: true,
                 })
+                setActiveIndex(0);
             } else {
                 flatListRef.current.scrollToIndex({
                     index: activeIndex + 1,
-                    animation: true,
+                    animated: true,
                 })
-            };
-        }, 2000);
+                setActiveIndex(prevIndex => prevIndex + 1);
+            }
+        }, 3000);
         
         return () => clearInterval(interval);
-    });
+    }, []);
 
     //======================== SHOW COMMENT =====================
     const [comments, setComments] = useState([]);
