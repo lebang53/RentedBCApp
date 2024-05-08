@@ -28,7 +28,7 @@ const TabBar = ({ tabs, icons = [ "home","search","heart","user"], onChange, nav
             navigation.navigate("Storage");
             break;
         case 3:
-            navigation.navigate("Rent");
+            navigation.navigate("Management");
             break;
         default:
             break;

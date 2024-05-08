@@ -1,7 +1,8 @@
-import { Text, View } from "react-native"
+import { Text, TouchableOpacity, View } from "react-native"
 import { FontAwesome } from "@expo/vector-icons"
 import { useContext } from "react";
 import { UserContext } from "../../../context/userContext";
+import COLORS from "../Constants";
 
 const Header = ({ headerText, headerIcon , navigation}) => {
     const {isAuthenticated} = useContext(UserContext);
@@ -10,12 +11,14 @@ const Header = ({ headerText, headerIcon , navigation}) => {
             <Text style={{ flex:1, fontSize: 20, fontWeight: "700" }}>
                 {
                     isAuthenticated() && 
-                    <FontAwesome name={'user'} size={32} color="#8BD8A2" onPress={() => navigation.navigate("UserProfile")} /> 
+                    <FontAwesome name={'user'} size={32} color={COLORS.primary} onPress={() => navigation.navigate("UserProfile")} /> 
                 }
                 {'  '}
                 {headerText}
             </Text> 
-            <FontAwesome name={headerIcon} size={32} color="#8BD8A2"/>
+            <TouchableOpacity onPress={() => navigation.navigate("Notifications")}>
+                <FontAwesome name={headerIcon} size={32} color={COLORS.primary}/>
+            </TouchableOpacity>
         </View>
     );
 };

@@ -227,7 +227,7 @@ const SearchDetails = ({ navigation }) => {
                                 {posts.map(item => (
                                     <Pressable 
                                         key={item.id}
-                                        onPress={() => navigation.navigate("HouseDetails", {houses: item}, {posts: item})}
+                                        onPress={() => navigation.navigate("HouseDetails", {posts: item})}
                                         style={{
                                             backgroundColor: "#fff",
                                             borderRadius: 16,

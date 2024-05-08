@@ -1,12 +1,13 @@
 import { useRoute } from "@react-navigation/native";
 import { useContext, useEffect, useRef, useState } from "react";
-import { Dimensions, FlatList, Image, Text, TextInput, TouchableOpacity, View } from "react-native"
+import { Dimensions, FlatList, Image, ScrollView, Text, TextInput, TouchableOpacity, View } from "react-native"
 import { SafeAreaView } from "react-native-safe-area-context";
 import { Ionicons } from "@expo/vector-icons";
 import COLORS from "../Constants";
-import { API_BASE, COMMENT } from "../../../constants/api";
+import { API_BASE, COMMENT, POST_COMMENT } from "../../../constants/api";
 import axios from "axios";
 import { UserContext } from "../../../context/userContext";
+import { ActionSheet } from "@expo/react-native-action-sheet";
 
 const HouseDetails = ({ navigation }) => {
     const route = useRoute();
@@ -35,7 +36,7 @@ const HouseDetails = ({ navigation }) => {
         return () => clearInterval(interval);
     });
 
-    //======================== COMMENT =====================
+    //======================== SHOW COMMENT =====================
     const [comments, setComments] = useState([]);
     const { userInfo, isAuthenticated } = useContext(UserContext);
     useEffect(() => {
@@ -47,9 +48,8 @@ const HouseDetails = ({ navigation }) => {
                             Authorization: `Bearer ${userInfo.access}`,
                         },
                     });
-                    console.log(response.data);
+                    // console.log(response.data);
                     setComments(response.data);
-                    console.log(response.data);
                 } else {
                     console.log('Người dùng chưa được xác thực');
                 }
@@ -61,6 +61,87 @@ const HouseDetails = ({ navigation }) => {
         fetchComments(); 
     
     }, []);
+
+    //======================= POST COMMENT ===================
+    const [commentContent, setCommentContent] = useState('');
+
+    const handleSendComment = async () => {
+        try {
+            if (isAuthenticated()) {
+                const response = await axios.post(`${API_BASE}${POST_COMMENT(posts.id)}`, {
+                        content: commentContent,
+                    },
+                    {
+                        headers: {
+                            Authorization: `Bearer ${userInfo.access}`,
+                        },
+                    }
+                );
+                // console.log("Nội dung bình luận:", response.data);
+                const newComment = response.data;
+                setComments([newComment, ...comments]);
+                setCommentContent('');
+            } else {
+                console.log('Người dùng chưa được xác thực');
+            }
+        } catch (error) {
+            console.error('Lỗi khi thực hiện bình luận', error);
+        }
+    };
+    
+    // ==================== SỬA VÀ XÓA BÌNH LUẬN ===================
+    
+    const [showOptions, setShowOptions] = useState(false);
+
+    const handleDelete = () => {
+        onDelete(comment.id); // Gọi hàm xóa bình luận
+        setShowOptions(false); // Ẩn menu modal sau khi thực hiện xóa
+    };
+
+    const handleUpdate = () => {
+        onUpdate(comment.id, comment.content); // Gọi hàm cập nhật bình luận và truyền nội dung hiện tại của bình luận
+        setShowOptions(false); // Ẩn menu modal sau khi thực hiện cập nhật
+    };
+    
+    // const handleUpdateComment = async (index) => {
+    //     try {
+    //         const updatedComment = { ...comments[index], content: 'Nội dung bình luận mới' }; // Thay đổi nội dung bình luận theo yêu cầu của bạn
+    //         const response = await axios.put(`${API_BASE}/comments/${updatedComment.id}`, updatedComment, {
+    //             headers: {
+    //                 Authorization: `Bearer ${userInfo.access}`,
+    //             },
+    //         });
+    //         // Cập nhật bình luận trong danh sách
+    //         setComments((prevComments) => {
+    //             const updatedComments = [...prevComments];
+    //             updatedComments[index] = response.data;
+    //             return updatedComments;
+    //         });
+    //     } catch (error) {
+    //         console.error('Lỗi khi cập nhật bình luận:', error);
+    //     }
+    // };
+
+    // const handleDeleteComment = async (index) => {
+    //     try {
+    //         const commentId = comments[index].id;
+    //         await axios.delete(`${API_BASE}/comments/${commentId}`, {
+    //             headers: {
+    //                 Authorization: `Bearer ${userInfo.access}`,
+    //             },
+    //         });
+    //         // Xóa bình luận khỏi danh sách
+    //         setComments((prevComments) => prevComments.filter((_, i) => i !== index));
+    //     } catch (error) {
+    //         console.error('Lỗi khi xóa bình luận:', error);
+    //     }
+    // };
+
+
+    //=================== NÚT ĐẶT HÀNG ========================
+    const handleNavigateToRent = () => {
+        navigation.navigate("Rent", {posts});
+    }
 
     const getItemLayout = (data, index) => ({
         length: screenWidth,
@@ -134,7 +215,7 @@ const HouseDetails = ({ navigation }) => {
 
     return (
         <SafeAreaView style={{ flex: 1 }}>
-            <View style={{ flex: 1 }}>
+            <ScrollView style={{ flex: 1 }}>
                 <View style={{ flexDirection: "row", marginVertical: 6, alignItems: "center"}}>
                     <TouchableOpacity onPress={() => navigation.navigate("Home")}
                     style={{
@@ -295,44 +376,62 @@ const HouseDetails = ({ navigation }) => {
                 
                 
                 <View style={{ paddingHorizontal: 16 }}>
-
+                    <Text style={{fontSize: 20, fontWeight: "bold", marginVertical: 12}}>Comments</Text>
+                    
                     <View style={{ flexDirection: 'row', alignItems: 'center' }}>
                         <TextInput
-                            style={{ flex: 1, borderWidth: 1, borderColor: COLORS.grey, borderRadius: 5, padding: 10 }}
-                            placeholder="Nhập nội dung bình luận..."
-                            // value={commentContent}
-                            // onChangeText={setCommentContent}
+                            style={{ flex: 1, borderWidth: 1, borderColor: COLORS.grey, borderRadius: 30, padding: 10 }}
+                            placeholder="  Nhập nội dung bình luận..."
+                            value={commentContent}
+                            onChangeText={setCommentContent} 
                         />
-                        <TouchableOpacity  style={{ marginLeft: 10, padding: 10, backgroundColor: COLORS.primary, borderRadius: 5 }}>
+
+                        <TouchableOpacity onPress={handleSendComment}  style={{ marginLeft: 10, padding: 15, backgroundColor: COLORS.primary, borderRadius: 10 }}>
                             <Text style={{ color: COLORS.white }}>Gửi</Text>
                         </TouchableOpacity>
                     </View>
 
-                    <Text style={{fontSize: 20, fontWeight: "bold", marginVertical: 12}}>Comments</Text>
-                    <FlatList 
-                        data={comments}
-                        renderItem={({ item }) => (
-                            <View style={{ marginBottom: 10 }}>
-                                <Text>{item.content}</Text>
+                    {comments.map((comment, index) => (
+                        <View key={index} 
+                        style={{ flexDirection: 'row', 
+                        marginBottom: 10, 
+                        alignItems: 'center', 
+                        borderBottomWidth: 1, 
+                        borderBottomColor: '#ccc' 
+                        }}>
+                            <Image source={{ uri: comment.user.avatar }} style={{ width: 50, height: 50, borderRadius: 25, marginRight: 10 }} />
+                            
+                            <View style={{ flex: 1 }}>
+                                <Text style={{ fontWeight: 'bold' }}>{comment.user.first_name}</Text>
+                                <Text>{comment.content}</Text>
                             </View>
-                        )}
-                        keyExtractor={(item, index) => index.toString()}
-                    />
+                    
+                            <TouchableOpacity>
+                                <Ionicons name="ellipsis-vertical" size={24} color="#999" />
+                            </TouchableOpacity>
+                        </View>
+                    ))}
+                    
                     
                 </View>
                 
 
 
-                <View 
+               
+            </ScrollView>
+            <View 
                 style={{ 
                     position: 'absolute', 
                     bottom: 0, 
                     width: '100%', 
                     flexDirection: 'row', 
                     justifyContent: 'space-around', 
-                    padding: 16,
+                    padding: 8,
+                    backgroundColor: COLORS.white,
+                    borderTopWidth: 1,
+                    borderTopColor: '#ccc',
                     }}>
-                    <TouchableOpacity onPress={() => console.log('Button 2 pressed')} 
+                    <TouchableOpacity onPress={handleNavigateToRent} 
                     style={{ 
                         backgroundColor: COLORS.primary, 
                         padding: 10, 
@@ -361,8 +460,7 @@ const HouseDetails = ({ navigation }) => {
                         <Text style={{ color: COLORS.primary }}>Lưu</Text>
                     </TouchableOpacity>
                 </View>
-            </View>
-            
+                
         </SafeAreaView>
     );
 };
