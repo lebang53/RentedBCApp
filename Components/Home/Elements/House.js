@@ -67,17 +67,12 @@ const House = () => {
 
     return (
         <View style={{
-            paddingHorizontal: 10,
+            paddingHorizontal: 2,
             flex: 1 
         }}>
-        <Text style={{
-            fontSize: 16,
-            fontWeight: "700",
-        }}>
-            Các nhà ở nổi bật
-        </Text>
+        
         <View style={{flex: 1}}>
-            <ScrollView contentContainerStyle={{ flexDirection: 'row', flexWrap: 'wrap' }}>
+            <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={{ flexDirection: 'row', flexWrap: 'wrap' }}>
                 {posts.map(item => (
                     <Pressable 
                         key={item.id}

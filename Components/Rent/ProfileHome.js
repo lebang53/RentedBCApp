@@ -1,11 +1,16 @@
 import { FontAwesome } from '@expo/vector-icons';
-import React, { useState } from 'react';
+import { useRoute } from '@react-navigation/native';
+import React, { useContext, useState } from 'react';
 import { View, Text, Image, StyleSheet, TouchableOpacity, Dimensions } from 'react-native';
 import { TextInput } from 'react-native-gesture-handler';
 import Modal from 'react-native-modal';
+import { UserContext } from '../../context/userContext';
 
 const ProfileHome = () => {
+  const route = useRoute();
+  const posts = route.params?.posts;
   const [isModalVisible, setModalVisible] = useState(false);
+  const { userInfo, isAuthenticated } = useContext(UserContext);
 
   const toggleModal = () => {
     setModalVisible(!isModalVisible);
@@ -20,18 +25,18 @@ const ProfileHome = () => {
           style={styles.avatar}
         />
         <Text style={styles.username}>Tên Người Dùng</Text>
-        <Text style={styles.username}>@dinhchuong</Text>
+        <Text style={styles.username}>{userInfo?.user.last_name}</Text>
         {/* Các thông tin khác của người dùng có thể được thêm ở đây */}
       </View>
       <View style={styles.session2}>
         {/* Thành phần session 2 */}
-        <Text style={styles.infoTitle}>Thông Tin Nhà</Text>
+        <Text style={styles.infoTitle}>Thông Tin Nhà: {posts.content}</Text>
         {/* Thêm các thông tin nhà ở đây */}
         <View style={styles.infoContainer}>
           <Text style={styles.infoLabel}>Địa chỉ:</Text>
           <TextInput
             style={styles.houseInfo}
-            value="123 Đường ABC, Quận XYZ, Thành phố ABC"
+            value={posts.house.address}
             editable={false}
           />
         </View>
@@ -39,7 +44,7 @@ const ProfileHome = () => {
           <Text style={styles.infoLabel}>Chủ hộ:</Text>
           <TextInput
             style={styles.houseInfo}
-            value="Nguyễn Văn A"
+            value={posts.house.owner.last_name}
             editable={false}
           />
         </View>

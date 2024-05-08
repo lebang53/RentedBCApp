@@ -177,6 +177,76 @@ const Management = ({ navigation }) => {
                     </View>
                 </View>
 
+                <TouchableOpacity onPress={() => navigation.navigate("CreatePost")}
+                style={{ flexDirection: "row", justifyContent: "center", borderBottomWidth: 1 }}>
+                    <View 
+                    style={{ 
+                        flexDirection: "row", 
+                        alignItems: "center", 
+                        width: "100%",
+                        height: 70,
+                        backgroundColor: COLORS.white
+                        }}>
+                        <TouchableOpacity 
+                        style={{
+                            marginHorizontal: 10,
+                            paddingHorizontal: 16, 
+                            paddingVertical: 16, 
+                            borderRadius: 20
+                            }}>
+                            <Ionicons name="cube-outline" size={24} color={COLORS.black} />
+                        </TouchableOpacity>
+
+                        <View style={{ flex:1}}>
+                            <Text style={{ fontSize: 15, fontWeight: "700"}}>Thêm bài viết</Text>
+                        </View>
+                        <TouchableOpacity 
+                        style={{
+                            marginHorizontal: 10,
+                            paddingHorizontal: 10, 
+                            paddingVertical: 10, 
+                            borderRadius: 20
+                            }}>
+                            <Text style={{color: COLORS.grey}}>Beta</Text>
+                        </TouchableOpacity>
+                    </View>
+                </TouchableOpacity>
+                
+                <TouchableOpacity onPress={() => navigation.navigate("CreateHouse")}
+                style={{ flexDirection: "row", justifyContent: "center", borderBottomWidth: 1 }}>
+                    <View 
+                    style={{ 
+                        flexDirection: "row", 
+                        alignItems: "center", 
+                        width: "100%",
+                        height: 70,
+                        backgroundColor: COLORS.white
+                        }}>
+                        <TouchableOpacity 
+                        style={{
+                            marginHorizontal: 10,
+                            paddingHorizontal: 16, 
+                            paddingVertical: 16, 
+                            borderRadius: 20
+                            }}>
+                            <Ionicons name="cube-outline" size={24} color={COLORS.black} />
+                        </TouchableOpacity>
+
+                        <View style={{ flex:1}}>
+                            <Text style={{ fontSize: 15, fontWeight: "700"}}>Thêm nhà</Text>
+                        </View>
+                        <TouchableOpacity 
+                        style={{
+                            marginHorizontal: 10,
+                            paddingHorizontal: 10, 
+                            paddingVertical: 10, 
+                            borderRadius: 20
+                            }}>
+                            <Text style={{color: COLORS.grey}}>Beta</Text>
+                        </TouchableOpacity>
+                    </View>
+                </TouchableOpacity>
+
                 <Pressable onPress={() => navigation.navigate("UserProfile")}
                 style={{ flexDirection: "row", justifyContent: "center", borderBottomWidth: 1 }}>
                     <View 
