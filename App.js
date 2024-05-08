@@ -15,6 +15,7 @@ import Storage from './Components/Home/Storage';
 import Management from './Components/User/Management';
 import UserProfile from './Components/User/UserProfile';
 import { UserProvider } from './context/userContext';
+import Rent from './Components/Rent';
 
 const Drawer = createDrawerNavigator();
 const Stack = createStackNavigator();
@@ -40,6 +41,7 @@ export default function App() {
           <Stack.Screen name="Storage" component={Storage} />
           <Stack.Screen name="Management" component={Management} />
           <Stack.Screen name="UserProfile" component={UserProfile} />
+          <Stack.Screen name="Rent" component={Rent} />
         </Stack.Navigator>
         {/* <Drawer.Navigator>
           <Drawer.Screen name='Register' component={Register} />
