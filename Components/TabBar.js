@@ -1,12 +1,13 @@
-import React, { useContext, useState } from 'react';
+import React, { useContext } from 'react';
 import { StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import Icon from 'react-native-vector-icons/FontAwesome';
+import { ScreenContext } from '../context/screenContext';
 import { UserContext } from '../context/userContext';
 
 const TabBar = ({ tabs, icons = [ "home","search","heart","user"], onChange, navigation}) => {
-  const [selectedTab, setSelectedTab] = useState(0);
+  const {selectedTab, setSelectedTab} = useContext(ScreenContext);
   const { isAuthenticated} = useContext(UserContext);
-
+  
   const handleTabPress = (index) => {
     if (onChange) {
       onChange(index);
