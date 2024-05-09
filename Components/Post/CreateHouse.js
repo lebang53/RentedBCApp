@@ -1,55 +1,86 @@
 import React, { useState, useEffect, useContext } from 'react';
-import { View, TextInput, Button, Text } from 'react-native';
+import { View, TextInput, Button, Text, TouchableOpacity } from 'react-native';
 import axios from 'axios'; // Import axios để gửi request đến API
 import { Picker } from '@react-native-picker/picker';
-import { API_BASE, CREATE_POST, HOUSE } from '../../constants/api';
+import { API_BASE, CATEGORY, CREATE_HOUSE} from '../../constants/api';
 import { UserContext } from '../../context/userContext';
+import COLORS from '../Home/Constants';
+import { SafeAreaView } from 'react-native-safe-area-context';
+import UserStyles from '../User/UserStyles';
+import { ActivityIndicator } from 'react-native';
 
-const CreateHouse = () => {
-    const [postContent, setPostContent] = useState('');
-    const [selectedHouse, setSelectedHouse] = useState(null);
-    const [houses, setHouses] = useState([]);
+const CreatePost = () => {
+    const [description, setDescription] = useState('');
+    const [address, setAddress] = useState('');
+    const [phoneNumber, setPhoneNumber] = useState('');
+    const [rentPrice, setRentPrice] = useState('');
+    const [roomCount, setRoomCount] = useState('');
+    const [isLoading, setIsLoading] = useState(false);
     const { userInfo, isAuthenticated } = useContext(UserContext);
+    const [categories, setCategories] = useState([]);
+    const [selectedCategory, setSelectedCategory] = useState(null);
 
-  useEffect(() => {
-    const fetchHouses = async () => {
-        try {
-          const response = await axios.get(`${API_BASE}${HOUSE}`); 
-          setHouses(response.data.results); 
-        } catch (error) {
-          console.error('Lỗi khi lấy danh sách nhà:', error);
-        }
-      };
+    useEffect(() => {
+        const fetchCategories = async () => {
+            try {
+                if (isAuthenticated()) {
+                    const response = await axios.get(`${API_BASE}${CATEGORY}`, {
+                        headers: {
+                            Authorization: `Bearer ${userInfo.access}`,
+                        },
+                    });
+                    setCategories(response.data.results);
+                } else {
+                    console.log('Người dùng chưa được xác thực');
+                }
+            } catch (error) {
+                console.error('Error fetching categories:', error);
+            }
+        };
 
-    fetchHouses();
+        fetchCategories();
     }, []);
 
-    const handlePostContentChange = (text) => {
-        console.log(text)
-        setPostContent(text);
+    const handleCategorySelectionChange = (categoryId) => {
+        setSelectedCategory(categoryId);
     };
 
-    const handleHouseSelectionChange = (houseId) => {
-        console.log(houseId)
-        setSelectedHouse(houseId);
-    };
-
-    const handlePostSubmit = async () => {
-        if (!selectedHouse) {
-        alert('Vui lòng chọn nhà trước khi đăng bài.');
+    const handlePostHouseSubmit = async () => {
+        if (!description.trim()) {
+        alert('Vui lòng nhập description nhà trước khi đăng bài.');
         return;
         }
     
-        if (!postContent.trim()) {
-        alert('Vui lòng nhập nội dung bài post.');
+        if (!address.trim()) {
+        alert('Vui lòng nhập địa chỉ nhà trước khi.');
+        return;
+        }
+
+        if (!phoneNumber.trim()) {
+        alert('Vui lòng nhập số điện thoại nhà trước khi đăng bài.');
         return;
         }
     
+        if (!rentPrice.trim()) {
+        alert('Vui lòng nhập giá thuê nhà trước khi đăng bài.');
+        return;
+        }
+
+        if (!roomCount.trim()) {
+        alert('Vui lòng nhập số phòng nhà trước khi đăng bài.');
+        return;
+        }
+        setIsLoading(true)
         try {
             if (isAuthenticated()) {
-                const response = await axios.post(`${API_BASE}${CREATE_POST}`, {
-                    content: postContent,
-                    house_id: selectedHouse,
+
+                const response = await axios.post(`${API_BASE}${CREATE_HOUSE}`, {
+                    description: description,
+                    address: address,
+                    phone_number: phoneNumber,
+                    rent_price: rentPrice,
+                    room_count: roomCount,
+                    category: selectedCategory,
                     },
                     {
                         headers: {
@@ -57,7 +88,6 @@ const CreateHouse = () => {
                         },
                     }
                 );
-                console.log(response.data)
                 if (response.status === 201) {
                     console.log('Bài post đã được đăng:', response.data);
                 } else {
@@ -68,40 +98,210 @@ const CreateHouse = () => {
             }
         
         } catch (error) {
-        console.error('Đã xảy ra lỗi khi gửi yêu cầu đến server:', error);
+            console.error('Đã xảy ra lỗi khi gửi yêu cầu đến server:', error);
+            // console.error('Error message:', error.message);
+            // console.error('Stack trace:', error.stack);
+        }
+        finally{
+            setIsLoading(false)
         }
     };
   
 
-  return (
-    <View style={{ flex: 1, padding: 20, top: 20}}>
-        <Text>Tạo nhà</Text>
-        <TextInput
-            style={{ height: 100, borderWidth: 1, borderColor: 'gray', marginBottom: 20, padding: 10 }}
-            placeholder="Nhập nội dung bài post..."
-            multiline
-            value={postContent}
-            onChangeText={handlePostContentChange}
-        />
+    return (
+        <SafeAreaView style={{ flex: 1}}>
+            <View style={{flex: 1}}>
+                <Text 
+                    style={{
+                        margin: 22,
+                        fontSize: 22,
+                        fontWeight: "bold",
+                    }}>
+                        Thêm nhà
+                </Text>
+                
+                <View>
+                    <Text 
+                        style={{
+                            marginHorizontal: 26,
+                            marginVertical: 8,
+                            fontSize: 16,
+                        }}>
+                        Description:
+                    </Text>
+                    <TextInput
+                    style={{ 
+                        borderWidth: 1, 
+                        borderColor: 'gray', 
+                        padding: 10,
+                        borderRadius: 30,
+                        paddingHorizontal: 16,
+                        width: "90%",
+                        alignSelf: 'center',
+                    }}
 
-            <Picker
-            selectedValue={selectedHouse}
-            onValueChange={handleHouseSelectionChange}
-            style={{ height: 50, width: '100%', marginBottom: 20 }}
-            >
-            <Picker.Item label="Chọn nhà của bạn" value={null} />
-            {houses && houses.map((house) => (
-                <Picker.Item key={house.id} label={house.description} value={house.id} />
-            ))}
-            </Picker>
+                        placeholder="Nhập description của nhà..."
+                        onChangeText={text => setDescription(text)}
+                        value={description}
+                    />
+                </View>
+                <View>
+                    <Text 
+                        style={{
+                            marginHorizontal: 26,
+                            marginVertical: 8,
+                            fontSize: 16,
+                        }}>
+                        Address:
+                    </Text>
+                    <TextInput
+                    style={{ 
+                        borderWidth: 1, 
+                        borderColor: 'gray', 
+                        padding: 10,
+                        borderRadius: 30,
+                        paddingHorizontal: 16,
+                        width: "90%",
+                        alignSelf: 'center',
+                    }}
 
+                        placeholder="Nhập địa chỉ của nhà..."
+                        onChangeText={text => setAddress(text)}
+                        value={address}
+                    />
+                </View>
+                
+                <View>
+                    <Text 
+                        style={{
+                            marginHorizontal: 26,
+                            marginVertical: 8,
+                            fontSize: 16,
+                        }}>
+                        Phone number:
+                    </Text>
+                    <TextInput
+                    style={{ 
+                        borderWidth: 1, 
+                        borderColor: 'gray', 
+                        padding: 10,
+                        borderRadius: 30,
+                        paddingHorizontal: 16,
+                        width: "90%",
+                        alignSelf: 'center',
+                    }}
 
-        <Button
-            title="Đăng bài"
-            onPress={handlePostSubmit}
-        />
-    </View>
-  );
+                        placeholder="Nhập số điện thoại của nhà..."
+                        onChangeText={text => setPhoneNumber(text)}
+                        value={phoneNumber}
+                    />
+                </View>
+
+                <View style={{flexDirection: 'row'}}>
+                    <View style={{flex: 1, }}>
+                        <Text 
+                            style={{
+                                marginHorizontal: 26,
+                                marginVertical: 8,
+                                fontSize: 16,
+                            }}>
+                            Rent price:
+                        </Text>
+                        <TextInput
+                        style={{ 
+                            marginLeft: 18,
+                            borderWidth: 1, 
+                            borderColor: 'gray', 
+                            padding: 10,
+                            borderRadius: 30,
+                            paddingHorizontal: 16,
+                            width: "90%",
+                            alignSelf: 'center',
+                        }}
+                            keyboardType='numeric'
+                            placeholder="Nhập giá thuê ..."
+                            onChangeText={text => setRentPrice(text)}
+                            value={rentPrice}
+                        />
+                    </View>
+
+                    <View style={{flex: 1}}>
+                        <Text 
+                            style={{
+                                marginHorizontal: 4,
+                                marginVertical: 8,
+                                fontSize: 16,
+                            }}>
+                            Room count:
+                        </Text>
+                        <TextInput
+                            style={{ 
+                                marginRight: 18,
+                                borderWidth: 1, 
+                                borderColor: 'gray', 
+                                padding: 10,
+                                borderRadius: 30,
+                                paddingHorizontal: 16,
+                                width: "90%",
+                                alignSelf: 'center',
+                            }}
+                            keyboardType='numeric'
+                            placeholder="Nhập số phòng..."
+                            onChangeText={text => setRoomCount(text)}
+                            value={roomCount}
+                        />
+                    </View>
+                </View>
+
+                    <Picker
+                        selectedValue={selectedCategory}
+                        onValueChange={handleCategorySelectionChange}
+                        style={{ height: 50, width: '90%', alignSelf:"center" }}
+                    >
+                        <Picker.Item label="Choose category..." value={null} />
+                        {categories && categories.map((category) => (
+                            <Picker.Item key={category.id} label={category.category_name} value={category.id} />
+                        ))}
+                    </Picker>
+
+                <TouchableOpacity 
+                style={{
+                    top: 30,
+                    backgroundColor: COLORS.primary,
+                    borderRadius: 30,
+                    paddingVertical: 14,
+                    width: "90%",
+                    alignSelf: "center",
+                }} onPress={handlePostHouseSubmit}>
+                    <Text 
+                    style={{
+                        fontSize: 18,
+                        fontWeight: '700',
+                        color: COLORS.white,
+                        alignSelf: "center",
+                    }}>
+                        Đăng bài
+                    </Text>
+                </TouchableOpacity>
+
+                <View style={{
+                    shadowColor: "#000",
+                    shadowOffset: { width: 0, height: 4 },
+                    shadowOpacity: 0.1,
+                    shadowRadius: 7,
+                }}>
+                    
+                    
+                </View>
+            </View>
+            {isLoading && (
+                <View style={UserStyles.loadingIndicator}>
+                    <ActivityIndicator
+                     size={60} color="#0000ff" />
+                </View>
+            )}
+        </SafeAreaView>
+    );
 };
 
-export default CreateHouse;
+export default CreatePost;

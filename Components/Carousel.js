@@ -8,7 +8,7 @@ const Carousel = ({ carouselData }) => {
 
     useEffect(() => {
         let interval = setInterval(() => {
-            console.log("Home", activeIndex);
+            // console.log("Home", activeIndex);
             if (activeIndex === (carouselData.length - 1)){
                 flatListRef.current.scrollToIndex({
                     index: 0,
