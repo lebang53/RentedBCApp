@@ -1,11 +1,13 @@
-import React, { useState } from "react";
+import React, { useContext, useState } from "react";
 import { View, Text, StyleSheet, FlatList, TouchableOpacity, Image } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { StatusBar } from "expo-status-bar";
 import { Ionicons } from "@expo/vector-icons"; // Import Icon from Expo
 import COLORS from "./Constants";
+import { ScreenContext } from "../../context/screenContext";
 
 const Storage = () => {
+  const {wishList, setMyWishList} = useContext(ScreenContext)
   const [savedHouses, setSavedHouses] = useState([
     {
         id: 1,
@@ -70,7 +72,7 @@ const Storage = () => {
         </View>
         <View style={styles.container}>
           <FlatList
-            data={savedHouses}
+            data={wishList}
             renderItem={renderItem}
             keyExtractor={(item) => item.id.toString()}
           />

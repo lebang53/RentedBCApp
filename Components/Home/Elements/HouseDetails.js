@@ -2,25 +2,55 @@ import { Ionicons } from "@expo/vector-icons";
 import { useRoute } from "@react-navigation/native";
 import axios from "axios";
 import { useContext, useEffect, useRef, useState } from "react";
-import { Dimensions, FlatList, Image, ScrollView, Text, TextInput, TouchableOpacity, View } from "react-native";
+import { Dimensions, FlatList, Image, Linking, ScrollView, Text, TextInput, TouchableOpacity, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { API_BASE, COMMENT, POST_COMMENT } from "../../../constants/api";
 import { UserContext } from "../../../context/userContext";
+import { ScreenContext } from "../../../context/screenContext";
 import COLORS from "../Constants";
 
 const HouseDetails = ({ navigation }) => {
     const route = useRoute();
     const posts = route.params?.posts;
     const flatListRef = useRef();
-
     const screenWidth = Dimensions.get("window").width;
-
+    const options = [
+        { label: 'Share via Facebook', value: 'facebook' },
+        { label: 'Share via Text Message', value: 'sms' },
+        { label: 'Cancel', value: 'cancel' },
+      ];
     const [activeIndex, setActiveIndex] = useState(0);
-
-    useEffect(() => {
+    const handlePhoneCall = () => {
+        Linking.openURL('tel:+0334436231');
+    };
+     const handleShareSocial = async () => {
+        try {
+            const result = await Sharing.shareAsync('Nội dung bạn muốn chia sẻ');
+            if (result.action === Sharing.sharedAction) {
+                showMessage({
+                    message: 'Chia sẻ thành công!',
+                    type: 'success',
+                });
+            } else if (result.action === Sharing.dismissedAction) {
+                showMessage({
+                    message: 'Hủy chia sẻ',
+                    type: 'warning',
+                });
+            }
+        } catch (error) {
+            console.error('Lỗi khi chia sẻ:', error.message);
+            showMessage({
+                message: 'Lỗi khi chia sẻ',
+                type: 'danger',
+            });
+        }
+    };
+    const handleChatMessage = () => {
+        Linking.openURL('sms:+0334436231');
+      };
+      useEffect(() => {
         let interval = setInterval(() => {
-            console.log("Home", activeIndex);
-            if (activeIndex === (carouselData.length - 1)){
+            if (activeIndex === (carouselData.length )) {
                 flatListRef.current.scrollToIndex({
                     index: 0,
                     animated: true,
@@ -36,11 +66,14 @@ const HouseDetails = ({ navigation }) => {
         }, 3000);
         
         return () => clearInterval(interval);
-    }, []);
+    }, [activeIndex]); // Thêm carouselData.length vào dependencies
+    
+    
 
     //======================== SHOW COMMENT =====================
     const [comments, setComments] = useState([]);
     const { userInfo, isAuthenticated } = useContext(UserContext);
+    const { wishList, setMyWishList } = useContext(ScreenContext);
     useEffect(() => {
         const fetchComments = async () => {
             try {
@@ -351,6 +384,7 @@ const HouseDetails = ({ navigation }) => {
                         </View>
 
                         <TouchableOpacity 
+                        onPress={handlePhoneCall}
                         style={{
                             paddingHorizontal: 16, 
                             paddingVertical: 16, 
@@ -362,6 +396,7 @@ const HouseDetails = ({ navigation }) => {
                         </TouchableOpacity>
 
                         <TouchableOpacity 
+                        onPress={handleChatMessage }
                         style={{
                             marginRight: 10, 
                             paddingHorizontal: 16, 
@@ -447,7 +482,11 @@ const HouseDetails = ({ navigation }) => {
                         <Text style={{ color: 'white' }}>Đặt phòng</Text>
                     </TouchableOpacity>
 
-                    <TouchableOpacity onPress={() => console.log('Button 3 pressed')} 
+                    <TouchableOpacity onPress={() => {
+                        setMyWishList([
+                            ...wishList, posts
+                        ])
+                    }} 
                     style={{ 
                         borderWidth: 1,
                         borderColor: COLORS.primary,

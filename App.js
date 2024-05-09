@@ -1,24 +1,24 @@
 import { createDrawerNavigator } from '@react-navigation/drawer';
 import { NavigationContainer } from '@react-navigation/native';
-import { StatusBar } from 'expo-status-bar';
-import React, { useState } from 'react';
-import { StyleSheet, Text, View } from 'react-native';
-import Home from './Components/Home/Home';
-import Login from './Components/User/Login';
 import { createStackNavigator } from '@react-navigation/stack';
-import Register from './Components/User/Register';
-import Welcome from './Components/Welcome/Welcome';
+import React from 'react';
+import { StyleSheet } from 'react-native';
 import HouseDetails from './Components/Home/Elements/HouseDetails';
-import SearchDetails from './Components/Search/SearchDetails';
+import Home from './Components/Home/Home';
 import Notifications from './Components/Home/Notifications';
 import Storage from './Components/Home/Storage';
-import Management from './Components/User/Management';
-import UserProfile from './Components/User/UserProfile';
-import { UserProvider } from './context/userContext';
-import Rent from './Components/Rent';
-import CreatePost from './Components/Post/Post';
 import CreateHouse from './Components/Post/CreateHouse';
+import CreatePost from './Components/Post/Post';
+import Rent from './Components/Rent';
+import SearchDetails from './Components/Search/SearchDetails';
 import SearchResults from './Components/Search/SearchResults';
+import Login from './Components/User/Login';
+import Management from './Components/User/Management';
+import Register from './Components/User/Register';
+import UserProfile from './Components/User/UserProfile';
+import Welcome from './Components/Welcome/Welcome';
+import { ScreenProvider } from './context/screenContext';
+import { UserProvider } from './context/userContext';
 
 const Drawer = createDrawerNavigator();
 const Stack = createStackNavigator();
@@ -31,6 +31,7 @@ export default function App() {
   // };
   
   return (
+    <ScreenProvider>
     <UserProvider>
       <NavigationContainer>
         <Stack.Navigator screenOptions={{ headerShown: false }} initialRouteName='Welcome'>
@@ -56,6 +57,7 @@ export default function App() {
         </Drawer.Navigator> */}
       </NavigationContainer>
     </UserProvider>
+    </ScreenProvider>
   );
 }
 
