@@ -18,6 +18,7 @@ import { UserProvider } from './context/userContext';
 import Rent from './Components/Rent';
 import CreatePost from './Components/Post/Post';
 import CreateHouse from './Components/Post/CreateHouse';
+import SearchResults from './Components/Search/SearchResults';
 
 const Drawer = createDrawerNavigator();
 const Stack = createStackNavigator();
@@ -46,6 +47,7 @@ export default function App() {
           <Stack.Screen name="Rent" component={Rent} />
           <Stack.Screen name="CreatePost" component={CreatePost} />
           <Stack.Screen name="CreateHouse" component={CreateHouse} />
+          <Stack.Screen name="SearchResults" component={SearchResults} />
         </Stack.Navigator>
         {/* <Drawer.Navigator>
           <Drawer.Screen name='Register' component={Register} />

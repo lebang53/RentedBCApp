@@ -1,13 +1,19 @@
-import React, { useState } from "react";
+import React, { useContext, useState } from "react";
 import { View, Text, StyleSheet, FlatList, TouchableOpacity, Image, Pressable, Alert } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { StatusBar } from "expo-status-bar";
 import { Ionicons } from "@expo/vector-icons"; // Import Icon from Expo
 import COLORS from "../Home/Constants";
+import { UserContext } from "../../context/userContext";
 
 const Management = ({ navigation }) => {
+    const { logout } = useContext(UserContext); 
 
-  return (
+    const handleLogout = () => {
+        logout(); 
+        navigation.navigate('Welcome'); 
+    };
+    return (
     <>
         <StatusBar translucent backgroundColor={COLORS.white} />
         <SafeAreaView style={{flex: 1}}>
@@ -27,7 +33,7 @@ const Management = ({ navigation }) => {
                         <Text style={{ fontSize: 15, fontWeight: "700"}}>0375574702</Text>
                     </View>
 
-                    <TouchableOpacity 
+                    <TouchableOpacity onPress={handleLogout}
                     style={{
                         marginRight: 10, 
                         paddingHorizontal: 16, 
@@ -185,30 +191,44 @@ const Management = ({ navigation }) => {
                         alignItems: "center", 
                         width: "100%",
                         height: 70,
-                        backgroundColor: COLORS.white
+                        backgroundColor: COLORS.secondary
                         }}>
-                        <TouchableOpacity 
+                            
+                        
+                        <View 
                         style={{
                             marginHorizontal: 10,
                             paddingHorizontal: 16, 
                             paddingVertical: 16, 
                             borderRadius: 20
                             }}>
-                            <Ionicons name="cube-outline" size={24} color={COLORS.black} />
-                        </TouchableOpacity>
+                            <Ionicons name="chatbox-outline" size={24} color={COLORS.black} />
+                        </View>
+                        <View 
+                        style={{
+                            left: -62,
+                            top: -6,
+                            marginHorizontal: 10,
+                            paddingHorizontal: 16, 
+                            paddingVertical: 16, 
+                            borderRadius: 20
+                            }}>
+                            <Ionicons name="add" size={24} color={COLORS.black} />
+                        </View>
 
                         <View style={{ flex:1}}>
-                            <Text style={{ fontSize: 15, fontWeight: "700"}}>Thêm bài viết</Text>
+                            <Text style={{ fontSize: 15, fontWeight: "700", left: -75}}>Thêm bài viết</Text>
                         </View>
-                        <TouchableOpacity 
+                        
+                        <View 
                         style={{
                             marginHorizontal: 10,
                             paddingHorizontal: 10, 
                             paddingVertical: 10, 
                             borderRadius: 20
                             }}>
-                            <Text style={{color: COLORS.grey}}>Beta</Text>
-                        </TouchableOpacity>
+                            <Ionicons name="chevron-forward" size={24} color={COLORS.black} />
+                        </View>
                     </View>
                 </TouchableOpacity>
                 
@@ -220,34 +240,46 @@ const Management = ({ navigation }) => {
                         alignItems: "center", 
                         width: "100%",
                         height: 70,
-                        backgroundColor: COLORS.white
+                        backgroundColor: COLORS.secondary
                         }}>
-                        <TouchableOpacity 
+                        
+                        <View 
                         style={{
                             marginHorizontal: 10,
                             paddingHorizontal: 16, 
                             paddingVertical: 16, 
                             borderRadius: 20
                             }}>
-                            <Ionicons name="cube-outline" size={24} color={COLORS.black} />
-                        </TouchableOpacity>
+                            <Ionicons name="home-outline" size={24} color={COLORS.black} />
+                        </View>
+                        <View 
+                        style={{
+                            left: -62,
+                            top: -6,
+                            marginHorizontal: 10,
+                            paddingHorizontal: 16, 
+                            paddingVertical: 16, 
+                            borderRadius: 20
+                            }}>
+                            <Ionicons name="add" size={24} color={COLORS.black} />
+                        </View>
 
                         <View style={{ flex:1}}>
-                            <Text style={{ fontSize: 15, fontWeight: "700"}}>Thêm nhà</Text>
+                            <Text style={{ fontSize: 15, fontWeight: "700", left: -75}}>Thêm nhà</Text>
                         </View>
-                        <TouchableOpacity 
+                        <View
                         style={{
                             marginHorizontal: 10,
                             paddingHorizontal: 10, 
                             paddingVertical: 10, 
                             borderRadius: 20
                             }}>
-                            <Text style={{color: COLORS.grey}}>Beta</Text>
-                        </TouchableOpacity>
+                            <Ionicons name="chevron-forward" size={24} color={COLORS.black} />
+                        </View>
                     </View>
                 </TouchableOpacity>
-
-                <Pressable onPress={() => navigation.navigate("UserProfile")}
+                
+                <TouchableOpacity onPress={() => navigation.navigate("UserProfile")}
                 style={{ flexDirection: "row", justifyContent: "center", borderBottomWidth: 1 }}>
                     <View 
                     style={{ 
@@ -257,7 +289,7 @@ const Management = ({ navigation }) => {
                         height: 70,
                         backgroundColor: COLORS.white
                         }}>
-                        <TouchableOpacity 
+                        <View 
                         style={{
                             marginHorizontal: 10,
                             paddingHorizontal: 16, 
@@ -265,11 +297,11 @@ const Management = ({ navigation }) => {
                             borderRadius: 20
                             }}>
                             <Ionicons name="person-outline" size={24} color={COLORS.black} />
-                        </TouchableOpacity>
+                        </View>
 
                         <Text style={{ fontSize: 15, fontWeight: "700", flex: 1}}>Cài đặt tài khoản</Text>
 
-                        <TouchableOpacity 
+                        <View 
                         style={{
                             marginHorizontal: 10,
                             paddingHorizontal: 10, 
@@ -277,9 +309,9 @@ const Management = ({ navigation }) => {
                             borderRadius: 20
                             }}>
                             <Ionicons name="chevron-forward" size={24} color={COLORS.black} />
-                        </TouchableOpacity>
+                        </View>
                     </View>
-                </Pressable>
+                </TouchableOpacity>
 
             </View>
         </SafeAreaView>

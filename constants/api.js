@@ -1,4 +1,4 @@
-export const API_BASE = 'https://09f7-125-235-238-46.ngrok-free.app'
+export const API_BASE = 'https://2ca7-2402-800-62c9-f9ad-a4bf-f56b-fd37-f587.ngrok-free.app'
 
 
 //======================== AUTHENTICATION ========================
@@ -24,6 +24,7 @@ export const CREATE_POST = '/posts/create_post/'
 
 //========================== HOUSE ===========================
  export const HOUSE = '/houses/'
+ export const CREATE_HOUSE = '/houses/create_house/'
 
 //========================= COMMENT ==========================
 export const COMMENT = (postId) => `/posts/${postId}/get_comments/`;

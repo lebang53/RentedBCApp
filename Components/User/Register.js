@@ -1,13 +1,10 @@
 import { ActivityIndicator, Alert, Button, Image, Pressable, Text, TextInput, Touchable, TouchableOpacity, View} from "react-native"
 import { SafeAreaView } from "react-native-safe-area-context"
-import AppStyles from "../../styles/AppStyles"
 import UserStyles from "./UserStyles"
 import { useState } from "react"
 import * as ImagePicker from "expo-image-picker"
-import { LinearGradient } from "expo-linear-gradient"
 import COLORS from "../Home/Constants"
 import { Ionicons } from "@expo/vector-icons"
-import { Users } from "react-native-feather"
 import registerAPI from "../../apis/register"
 
 const Register = ( {navigation} ) => {
@@ -16,8 +13,7 @@ const Register = ( {navigation} ) => {
     const [username, setUsername] = useState('');
     const [password, setPassword] = useState('');
     const [email, setEmail] = useState('');
-    const [avatar, setAvatar] = useState(null);
-    const [error, setError] = useState("");
+    const [avatar, setAvatar] = useState('');
     const [isPasswordShown, setIsPasswordShown] = useState(true);
     const [isLoading, setIsLoading] = useState(false);
 
@@ -35,21 +31,52 @@ const Register = ( {navigation} ) => {
             quality: 1,
         });
 
+        console.log(result)
         if (!result.canceled) {
-            setAvatar(result.uri);
+            setAvatar(result.assets[0].uri);
+            console.log(result.assets[0].uri);
         }
     }
     
     const handleRegister = async () => {
+        if (!firstname.trim()) {
+        alert('Vui lòng nhập tên.');
+        return;
+        }
+    
+        if (!lastname.trim()) {
+        alert('Vui lòng nhập họ.');
+        return;
+        }
+
+        if (!username.trim()) {
+        alert('Vui lòng nhập username.');
+        return;
+        }
+    
+        if (!password.trim()) {
+        alert('Vui lòng nhập password.');
+        return;
+        }
+
+        if (!email.trim()) {
+        alert('Vui lòng nhập email.');
+        return;
+        }
+        if (!avatar.trim()) {
+        alert('Vui lòng thêm avatar.');
+        return;
+        }
         try {
             setIsLoading(true)
             const res = await registerAPI.register(
-                firstname, lastname, email, username,password
+                firstname, lastname, email, username, password, avatar
             );
+            console.log("avatar",avatar)
             const data = res.data;
             console.log(data?.user);
             if (res.status == 200) {
-                setUserInfo(data)  // save global info
+                setUserInfo(data)
                 console.log("Đăng ký thành công");
                 navigation.navigate("Login")
             } else {
@@ -57,7 +84,6 @@ const Register = ( {navigation} ) => {
             }
         } catch (error) {
             console.error("Lỗi khi gọi API đăng ký:", error);
-            setError("Đã xảy ra lỗi khi đăng ký. Vui lòng thử lại sau.");
         }
         finally{
             setIsLoading(false)
@@ -194,8 +220,17 @@ const Register = ( {navigation} ) => {
                         
                     </View>
 
-                    {/* {avatar && <Image source={{uri: avatar}} style={{width: 100, height:100, borderRadius: 50}} />}
-                    <Button title="Choose avatar" onPress={pickImage} /> */}
+                    <View>
+                        <View style={{marginBottom:8}}>
+                            <Text style={UserStyles.Text3}>
+                                Avatar
+                            </Text>
+                            <TouchableOpacity onPress={pickImage} style={UserStyles.TextInput}>
+                                <Text>Choose avatar</Text>
+                            </TouchableOpacity>
+                        </View>
+                        {avatar && <Image source={{uri: avatar}} style={{ width: 100, height:100,}} />}
+                    </View>
 
                     <TouchableOpacity style={UserStyles.Opa} onPress={ handleRegister }>
                         <Text style={UserStyles.Text4}>

@@ -29,6 +29,7 @@ const SearchDetails = ({ navigation }) => {
 
             console.log(response.data);
             setSearchResults(response.data);
+            navigation.navigate('SearchResults', { searchResults: response.data });
         } catch (error) {
             console.error('Error searching houses:', error);
         }

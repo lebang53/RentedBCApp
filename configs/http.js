@@ -1,6 +1,6 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import axios from 'axios';
-import { API_BASE, LOGIN } from '../constants/api';
+import { API_BASE, LOGIN, REGISTER } from '../constants/api';
 
 // Tạo một instance Axios mới
 const axiosInstance = axios.create({
@@ -8,7 +8,7 @@ const axiosInstance = axios.create({
   timeout: 10000, 
 });
 
-const whiteList = [LOGIN]
+const whiteList = [LOGIN, REGISTER]
 
 // Thêm interceptor để gắn bearer token vào mỗi yêu cầu
 axiosInstance.interceptors.request.use(

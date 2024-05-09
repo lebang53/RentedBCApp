@@ -8,7 +8,7 @@ const UserProvider = ({ children }) => {
   const [userInfo, setUserInfo] = useState(null);
 
   const logout = () => {
-    setUser(null);
+    setUserInfo(null);
   };
 
   const isAuthenticated = () => userInfo != null
