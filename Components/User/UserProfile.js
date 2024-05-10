@@ -2,10 +2,10 @@ import React, { useState } from "react";
 import { View, Text, StyleSheet, FlatList, TouchableOpacity, Image, Pressable } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { StatusBar } from "expo-status-bar";
-import { Ionicons } from "@expo/vector-icons"; // Import Icon from Expo
+import { Ionicons } from "@expo/vector-icons"; 
 import COLORS from "../Home/Constants";
 
-const UserProfile = () => {
+const UserProfile = ( {navigation} ) => {
   const [avatar, setAvatar] = useState('default_avatar.jpg');
   const [currentPassword, setCurrentPassword] = useState('');
   const [newPassword, setNewPassword] = useState('');
@@ -95,7 +95,7 @@ const UserProfile = () => {
                     </View>
                 </Pressable>
 
-                <Pressable style={{ flexDirection: "row", justifyContent: "center", borderBottomWidth: 1 }}>
+                <TouchableOpacity onPress={() => navigation.navigate("ChangePassword")} style={{ flexDirection: "row", justifyContent: "center", borderBottomWidth: 1 }}>
                     <View 
                     style={{ 
                         flexDirection: "row", 
@@ -104,7 +104,7 @@ const UserProfile = () => {
                         height: 70,
                         backgroundColor: COLORS.white
                         }}>
-                        <TouchableOpacity 
+                        <View 
                         style={{
                             marginHorizontal: 10,
                             paddingHorizontal: 16, 
@@ -112,12 +112,12 @@ const UserProfile = () => {
                             borderRadius: 20
                             }}>
                             <Ionicons name="lock-closed-outline" size={24} color={COLORS.black} />
-                        </TouchableOpacity>
+                        </View>
 
                         <View style={{ flex:1}}>
                             <Text style={{ fontSize: 15, fontWeight: "700"}}>Thay đổi mật khẩu</Text>
                         </View>
-                        <TouchableOpacity 
+                        <View 
                         style={{
                             marginHorizontal: 10,
                             paddingHorizontal: 10, 
@@ -125,9 +125,9 @@ const UserProfile = () => {
                             borderRadius: 20
                             }}>
                             <Ionicons name="chevron-forward" size={24} color={COLORS.black} />
-                        </TouchableOpacity>
+                        </View>
                     </View>
-                </Pressable>
+                </TouchableOpacity>
 
                 <Pressable style={{ flexDirection: "row", justifyContent: "center", borderBottomWidth: 1 }}>
                     <View 

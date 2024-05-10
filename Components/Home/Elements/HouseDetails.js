@@ -50,7 +50,7 @@ const HouseDetails = ({ navigation }) => {
       };
       useEffect(() => {
         let interval = setInterval(() => {
-            if (activeIndex === (carouselData.length )) {
+            if (activeIndex === (carouselData.length - 1)) {
                 flatListRef.current.scrollToIndex({
                     index: 0,
                     animated: true,

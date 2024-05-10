@@ -13,30 +13,30 @@ const Home = ({ navigation }) => {
   const { userInfo, isAuthenticated } = useContext(UserContext);
   const lastName = isAuthenticated() ? userInfo?.user.last_name : 'Bạn';
 
-  useEffect(() => {
-    const backAction = () => {
-      return true; 
-    };
+  // useEffect(() => {
+  //   const backAction = () => {
+  //     return true; 
+  //   };
 
-    const backHandler = navigation.addListener('beforeRemove', (e) => {
-      e.preventDefault();
-    });
+  //   const backHandler = navigation.addListener('beforeRemove', (e) => {
+  //     e.preventDefault();
+  //   });
 
-    navigation.addListener('beforeRemove', (e) => {
-      e.preventDefault();
-      Alert.alert(
-        'Confirmation',
-        'Are you sure you want to exit the app?',
-        [
-          { text: 'Cancel', onPress: () => {} },
-          { text: 'OK', onPress: () => BackHandler.exitApp() }
-        ],
-        { cancelable: false }
-      );
-    });
+  //   navigation.addListener('beforeRemove', (e) => {
+  //     e.preventDefault();
+  //     Alert.alert(
+  //       'Confirmation',
+  //       'Are you sure you want to exit the app?',
+  //       [
+  //         { text: 'Cancel', onPress: () => {} },
+  //         { text: 'OK', onPress: () => BackHandler.exitApp() }
+  //       ],
+  //       { cancelable: false }
+  //     );
+  //   });
 
-    return () => backHandler.remove();
-  }, [navigation]);
+  //   return () => backHandler.remove();
+  // }, [navigation]);
 
   return (
     <>

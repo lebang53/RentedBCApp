@@ -19,6 +19,7 @@ import UserProfile from './Components/User/UserProfile';
 import Welcome from './Components/Welcome/Welcome';
 import { ScreenProvider } from './context/screenContext';
 import { UserProvider } from './context/userContext';
+import ChangePassword from './Components/User/ChangePassword';
 
 const Drawer = createDrawerNavigator();
 const Stack = createStackNavigator();
@@ -49,6 +50,7 @@ export default function App() {
           <Stack.Screen name="CreatePost" component={CreatePost} />
           <Stack.Screen name="CreateHouse" component={CreateHouse} />
           <Stack.Screen name="SearchResults" component={SearchResults} />
+          <Stack.Screen name="ChangePassword" component={ChangePassword} />
         </Stack.Navigator>
         {/* <Drawer.Navigator>
           <Drawer.Screen name='Register' component={Register} />
