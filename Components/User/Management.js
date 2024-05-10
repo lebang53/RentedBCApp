@@ -2,7 +2,7 @@ import React, { useContext, useState } from "react";
 import { View, Text, StyleSheet, FlatList, TouchableOpacity, Image, Pressable, Alert } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { StatusBar } from "expo-status-bar";
-import { Ionicons } from "@expo/vector-icons"; // Import Icon from Expo
+import { Ionicons } from "@expo/vector-icons";
 import COLORS from "../Home/Constants";
 import { UserContext } from "../../context/userContext";
 

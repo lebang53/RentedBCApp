@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useContext } from 'react';
 import { View, TextInput, Button, Text, TouchableOpacity } from 'react-native';
-import axios from 'axios'; // Import axios để gửi request đến API
+import axios from 'axios'; 
 import { Picker } from '@react-native-picker/picker';
 import { API_BASE, CATEGORY, CREATE_HOUSE} from '../../constants/api';
 import { UserContext } from '../../context/userContext';
@@ -47,27 +47,27 @@ const CreatePost = () => {
 
     const handlePostHouseSubmit = async () => {
         if (!description.trim()) {
-        alert('Vui lòng nhập description nhà trước khi đăng bài.');
+        alert('Vui lòng nhập description nhà trước khi thêm nhà.');
         return;
         }
     
         if (!address.trim()) {
-        alert('Vui lòng nhập địa chỉ nhà trước khi.');
+        alert('Vui lòng nhập địa chỉ nhà trước khi thêm nhà.');
         return;
         }
 
         if (!phoneNumber.trim()) {
-        alert('Vui lòng nhập số điện thoại nhà trước khi đăng bài.');
+        alert('Vui lòng nhập số điện thoại nhà trước khi thêm nhà.');
         return;
         }
     
         if (!rentPrice.trim()) {
-        alert('Vui lòng nhập giá thuê nhà trước khi đăng bài.');
+        alert('Vui lòng nhập giá thuê nhà trước khi thêm nhà.');
         return;
         }
 
         if (!roomCount.trim()) {
-        alert('Vui lòng nhập số phòng nhà trước khi đăng bài.');
+        alert('Vui lòng nhập số phòng nhà trước khi thêm nhà.');
         return;
         }
         setIsLoading(true)
@@ -89,9 +89,9 @@ const CreatePost = () => {
                     }
                 );
                 if (response.status === 201) {
-                    console.log('Bài post đã được đăng:', response.data);
+                    console.log('Nhà đã được thêm:', response.data);
                 } else {
-                    console.error('Đã xảy ra lỗi khi đăng bài post:', response.data);
+                    console.error('Đã xảy ra lỗi khi thêm nhà:', response.data);
                 }
             } else {
                 console.log('Người dùng chưa được xác thực');
@@ -280,7 +280,7 @@ const CreatePost = () => {
                         color: COLORS.white,
                         alignSelf: "center",
                     }}>
-                        Đăng bài
+                        Thêm nhà
                     </Text>
                 </TouchableOpacity>
 
